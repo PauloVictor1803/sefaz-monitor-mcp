@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor SEFAZ MCP - Status em Tempo Real para Tina & Assistentes IA</title>
+    <meta name="description" content="Servidor MCP (Streamable HTTP) e API REST para monitoramento em tempo real dos servidores da SEFAZ (NF-e, NFC-e, CT-e, MDF-e) em todos os 27 estados do Brasil via Webmania®.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #080b11;
+            --bg-card: #0f1624;
+            --bg-card-hover: #141e30;
+            --bg-surface: #182338;
+            --bg-code: #0b101b;
+            --border: #1e2c45;
+            --border-highlight: #2f456e;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.25);
+            --accent: #06b6d4;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-subtle: #64748b;
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.25);
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 10%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header / Navbar */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(8, 11, 17, 0.85);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1d4ed8, #0284c7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 19px;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        .badge-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 64px 0 40px;
+            text-align: center;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 14px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 999px;
+            color: #60a5fa;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            max-width: 720px;
+            margin: 0 auto 32px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Quick Endpoint Box */
+        .url-banner {
+            max-width: 780px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .url-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+            overflow: hidden;
+        }
+
+        .protocol-badge {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .url-text {
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            color: #38bdf8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #0284c7);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--bg-surface);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        /* Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin: 40px 0;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-highlight);
+        }
+
+        .metric-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: var(--bg-surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .metric-val {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Section Layout */
+        .section-header {
+            margin-bottom: 24px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        /* Incidents Feed */
+        .incidents-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 48px;
+        }
+
+        .incident-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 16px;
+            background: var(--bg-code);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--success);
+            margin-top: 12px;
+        }
+
+        .incident-item.alert {
+            border-left-color: var(--danger);
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        .incident-item.resolved {
+            border-left-color: var(--accent);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .incident-time {
+            font-size: 0.75rem;
+            color: var(--text-subtle);
+            font-family: var(--font-mono);
+            margin-top: 4px;
+        }
+
+        /* Filter Tabs & Matrix */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-card);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 260px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 10px 14px 10px 36px;
+            color: var(--text-main);
+            font-size: 0.88rem;
+            font-family: var(--font-sans);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-subtle);
+            pointer-events: none;
+            font-size: 14px;
+        }
+
+        /* States Grid */
+        .states-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 14px;
+            margin-bottom: 56px;
+        }
+
+        .state-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+
+        .state-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-highlight);
+        }
+
+        .state-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .state-uf-badge {
+            background: var(--bg-surface);
+            color: var(--text-main);
+            font-weight: 800;
+            font-size: 0.95rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .state-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .state-region {
+            font-size: 0.75rem;
+            color: var(--text-subtle);
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .status-pill.up {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-pill.down {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .authorizer-tag {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-code);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            font-family: var(--font-mono);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Interactive Playground */
+        .tester-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 56px;
+        }
+
+        .tester-controls {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .tester-controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-select, .form-input {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            color: var(--text-main);
+            font-size: 0.88rem;
+            font-family: var(--font-sans);
+            outline: none;
+        }
+
+        .form-select:focus, .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        .output-box {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            max-height: 380px;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+
+        /* Tina Integration Guide */
+        .guide-section {
+            background: linear-gradient(180deg, var(--bg-card) 0%, rgba(15, 22, 36, 0.6) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 36px 32px;
+            margin-bottom: 56px;
+        }
+
+        .step-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .step-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            position: relative;
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .step-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .step-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .step-highlight {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: #38bdf8;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Prompt Box for Tina */
+        .prompt-box {
+            background: #060910;
+            border: 1px solid #1e293b;
+            border-radius: var(--radius-md);
+            padding: 18px;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: #cbd5e1;
+            margin-top: 16px;
+            position: relative;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 36px 0;
+            text-align: center;
+            color: var(--text-subtle);
+            font-size: 0.85rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.88rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: none;
+            z-index: 100;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container nav-content">
+            <a href="/" class="brand">
+                <div class="brand-icon">⚡</div>
+                <div>SEFAZ Monitor <span style="color: var(--primary); font-weight: 400;">MCP</span></div>
+            </a>
+            <div class="nav-links">
+                <a href="#monitor">Monitor</a>
+                <a href="#testador">Testar Ferramentas</a>
+                <a href="#guia-tina">Integrar na Tina</a>
+                <a href="/docs">Documentação</a>
+                <div class="badge-live" id="headerStatusBadge">
+                    <span class="pulse-dot"></span>
+                    <span id="headerStatusText">SEFAZ OPERACIONAL</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-tag">Model Context Protocol • Streamable HTTP • Webmania®</div>
+            <h1>Monitor SEFAZ em Tempo Real para IA</h1>
+            <p>Servidor MCP completo e pronto para a assistente <strong>Tina</strong> e aplicações de suporte do ERP Resulth. Consulta autorizadores de NF-e, NFC-e, CT-e e MDF-e em todos os 27 estados.</p>
+
+            <div class="url-banner">
+                <div class="url-info">
+                    <span class="protocol-badge">Streamable HTTP</span>
+                    <span class="url-text" id="mcpUrlDisplay">https://.../mcp</span>
+                </div>
+                <button class="btn btn-primary" onclick="copiarUrlMcp()">
+                    📋 Copiar URL para a TINA
+                </button>
+            </div>
+        </section>
+
+        <!-- Metrics Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">🌐</div>
+                <div>
+                    <div class="metric-val" id="metricStatusGlobal">OPERACIONAL</div>
+                    <div class="metric-label">Status Global Webmania</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">⚡</div>
+                <div>
+                    <div class="metric-val" id="metricIncidentesAtivos">0</div>
+                    <div class="metric-label">Incidentes Ativos</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background: rgba(6, 182, 212, 0.15); color: #22d3ee;">🏛️</div>
+                <div>
+                    <div class="metric-val">27 UFs</div>
+                    <div class="metric-label">Estados + SVRS & SVAN</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">📑</div>
+                <div>
+                    <div class="metric-val">4 Documentos</div>
+                    <div class="metric-label">NF-e • NFC-e • CT-e • MDF-e</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alertas e Incidentes Recentes -->
+        <div class="incidents-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <h3 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                    🔔 Alertas de Instabilidade & Histórico Recente
+                </h3>
+                <span style="font-size: 0.8rem; color: var(--text-subtle);" id="lblUltimaAtt">Atualizado agora</span>
+            </div>
+            <div id="incidentsContainer">
+                <div class="incident-item">
+                    <span style="font-size: 18px;">✅</span>
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.92rem;">Todos os serviços operando normalmente</div>
+                        <div class="incident-time">Nenhum autorizador da SEFAZ apresenta queda no momento.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Matriz de Estados e Documentos -->
+        <section id="monitor">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Matriz de Autorização por Estado</h2>
+                    <p class="section-subtitle">Identificação automática entre autorizador próprio e autorizador virtual (SVRS / SVAN)</p>
+                </div>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="selecionarDoc('NFE')">NF-e</button>
+                    <button class="tab-btn" onclick="selecionarDoc('NFCE')">NFC-e</button>
+                    <button class="tab-btn" onclick="selecionarDoc('CTE')">CT-e</button>
+                    <button class="tab-btn" onclick="selecionarDoc('MDFE')">MDF-e</button>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="txtBuscaUf" class="search-input" placeholder="Filtrar por UF ou Estado (ex: BA, SP, Bahia)..." oninput="filtrarEstados()">
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);" id="lblContadorEstados">
+                    Exibindo 27 estados
+                </div>
+            </div>
+
+            <div class="states-grid" id="statesGrid">
+                <!-- Preenchido via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Testador Interativo MCP -->
+        <section id="testador">
+            <div class="tester-card">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">🧪 Testador de Ferramentas MCP ao Vivo</h2>
+                        <p class="section-subtitle">Simule as chamadas que a Tina e clientes MCP realizam em tempo real</p>
+                    </div>
+                </div>
+
+                <div class="tester-controls">
+                    <select id="selFerramenta" class="form-select" onchange="ajustarCamposTeste()">
+                        <option value="consultar_status_geral_sefaz">consultar_status_geral_sefaz</option>
+                        <option value="consultar_status_uf" selected>consultar_status_uf (Estado específico)</option>
+                        <option value="consultar_incidentes_sefaz">consultar_incidentes_sefaz (Quedas/Alertas)</option>
+                        <option value="listar_todos_estados_sefaz">listar_todos_estados_sefaz (Tabela 27 UFs)</option>
+                    </select>
+
+                    <input type="text" id="inpUfTeste" class="form-input" placeholder="UF (ex: BA, SP, MG)" value="BA">
+
+                    <select id="selDocTeste" class="form-select">
+                        <option value="TODOS">Todos os Documentos</option>
+                        <option value="NFE">NF-e</option>
+                        <option value="NFCE">NFC-e</option>
+                        <option value="CTE">CT-e</option>
+                        <option value="MDFE">MDF-e</option>
+                    </select>
+
+                    <button class="btn btn-primary" onclick="executarTesteFerramenta()" id="btnExecutarTeste">
+                        ▶️ Executar Consulta
+                    </button>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted);">RETORNO DA FERRAMENTA (TEXTO PARA A TINA / WHATSAPP):</span>
+                    <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.78rem;" onclick="copiarRetorno()">Copiar</button>
+                </div>
+                <div class="output-box" id="outputTeste">Clique em "Executar Consulta" para visualizar a resposta em tempo real...</div>
+            </div>
+        </section>
+
+        <!-- Guia Passo a Passo de Configuração na Tina -->
+        <section id="guia-tina">
+            <div class="guide-section">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">🤖 Como Conectar este MCP na TINA (Console ATS)</h2>
+                        <p class="section-subtitle">Configuração oficial em 2 minutos na aba "Tools HTTP e MCP" da assistente</p>
+                    </div>
+                </div>
+
+                <div class="step-list">
+                    <div class="step-card">
+                        <div class="step-num">1</div>
+                        <div class="step-title">Acesse a Tina no Console</div>
+                        <div class="step-desc">No painel de agentes, abra a <strong>Tina</strong> e clique na aba <strong>Tools HTTP e MCP</strong>.</div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">2</div>
+                        <div class="step-title">Adicione o Servidor MCP</div>
+                        <div class="step-desc">Na seção <em>Servidores MCP (Streamable HTTP)</em>, clique em <strong>+ Servidor MCP</strong>.</div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">3</div>
+                        <div class="step-title">Preencha o Nome e a URL</div>
+                        <div class="step-desc">Defina o identificador e cole o endpoint deste servidor:</div>
+                        <div class="step-highlight">
+                            <span>Nome: <strong>sefaz_monitor</strong></span>
+                        </div>
+                        <div class="step-highlight">
+                            <span id="mcpUrlStep">https://.../mcp</span>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-num">4</div>
+                        <div class="step-title">Testar e Salvar</div>
+                        <div class="step-desc">Clique no botão <strong>Testar conexão</strong>. O servidor responderá verde imediatamente. Depois clique em <strong>Salvar e ativar</strong>!</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 32px;">
+                    <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 8px;">💡 Orientação para o Prompt da Tina:</h4>
+                    <p style="font-size: 0.88rem; color: var(--text-muted);">Adicione a diretriz abaixo no prompt da Tina para ela acionar o monitor proativamente em caso de dúvidas fiscais:</p>
+                    <div class="prompt-box">
+Se o cliente relatar lentidão ao emitir nota, erro na SEFAZ, rejeição de indisponibilidade, ou perguntar se a SEFAZ está fora do ar (NF-e, NFC-e, etc.), consulte imediatamente o status do estado dele usando a ferramenta sefaz_monitor_consultar_status_uf informando a UF da empresa.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>SEFAZ Monitor MCP • Desenvolvido para ATS Informática & Assistente Tina</p>
+            <p style="margin-top: 6px;">Fonte de dados públicos: Webmania® Real-time SEFAZ Monitor • Protocolo Model Context Protocol (Streamable HTTP / SSE)</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">URL copiada com sucesso!</div>
+
+    <script>
+        let dadosCompletos = null;
+        let documentoSelecionado = 'NFE';
+
+        // Atualiza a URL dinâmica exibida na tela conforme o host acessado
+        function inicializarUrls() {
+            const urlBase = window.location.origin;
+            const mcpUrl = `${urlBase}/mcp`;
+            document.getElementById('mcpUrlDisplay').innerText = mcpUrl;
+            document.getElementById('mcpUrlStep').innerText = mcpUrl;
+        }
+
+        function copiarUrlMcp() {
+            const url = document.getElementById('mcpUrlDisplay').innerText;
+            navigator.clipboard.writeText(url).then(() => {
+                mostrarToast('URL do MCP copiada! Cole no campo URL da Tina.');
+            });
+        }
+
+        function copiarRetorno() {
+            const txt = document.getElementById('outputTeste').innerText;
+            navigator.clipboard.writeText(txt).then(() => {
+                mostrarToast('Texto copiado com sucesso!');
+            });
+        }
+
+        function mostrarToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3000);
+        }
+
+        async function carregarDadosIniciais() {
+            try {
+                const res = await fetch('/api/status');
+                const data = await res.json();
+                dadosCompletos = data;
+
+                // Atualiza cards de métricas
+                const isOp = data.statusGeral === 'OPERACIONAL';
+                document.getElementById('metricStatusGlobal').innerText = isOp ? 'OPERACIONAL' : data.statusGeralRotulo;
+                document.getElementById('metricStatusGlobal').style.color = isOp ? '#34d399' : '#f87171';
+                document.getElementById('metricIncidentesAtivos').innerText = data.totalIncidentesAtivos;
+
+                // Atualiza badge de topo
+                const headerText = isOp ? 'SEFAZ OPERACIONAL' : 'INSTABILIDADE SEFAZ';
+                document.getElementById('headerStatusText').innerText = headerText;
+                document.getElementById('lblUltimaAtt').innerText = `Atualizado às ${new Date().toLocaleTimeString('pt-BR')}`;
+
+                // Renderiza incidentes
+                renderizarIncidentes(data);
+
+                // Carrega estados
+                await carregarEstados();
+            } catch (err) {
+                console.error('Erro ao buscar status da SEFAZ:', err);
+            }
+        }
+
+        function renderizarIncidentes(data) {
+            const container = document.getElementById('incidentsContainer');
+            container.innerHTML = '';
+
+            const ativos = data.incidentesAtivos || [];
+            const resolvidos = data.incidentesResolvidosRecentes || [];
+
+            if (ativos.length === 0 && resolvidos.length === 0) {
+                container.innerHTML = `
+                    <div class="incident-item">
+                        <span style="font-size: 18px;">✅</span>
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.92rem;">Todos os serviços operando normalmente</div>
+                            <div class="incident-time">Nenhum autorizador da SEFAZ apresenta queda no momento.</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            ativos.forEach(inc => {
+                container.innerHTML += `
+                    <div class="incident-item alert">
+                        <span style="font-size: 18px;">🚨</span>
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.92rem; color: #f87171;">${inc.name}</div>
+                            <div class="incident-time">Iniciado em: ${new Date(inc.started).toLocaleString('pt-BR')} | Status: ${inc.status}</div>
+                            ${inc.lastUpdate?.message ? `<div style="font-size: 0.85rem; color: #cbd5e1; margin-top: 4px;">${inc.lastUpdate.message}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            resolvidos.slice(0, 3).forEach(inc => {
+                container.innerHTML += `
+                    <div class="incident-item resolved">
+                        <span style="font-size: 18px;">✅</span>
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.92rem; color: #22d3ee;">${inc.name} (Resolvido)</div>
+                            <div class="incident-time">Resolvido em: ${new Date(inc.resolved).toLocaleString('pt-BR')} (Início: ${new Date(inc.started).toLocaleTimeString('pt-BR')})</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function carregarEstados() {
+            try {
+                const res = await fetch(`/api/estados?tipo_documento=${documentoSelecionado}`);
+                const data = await res.json();
+                renderizarGridEstados(data.estados || []);
+            } catch (err) {
+                console.error('Erro ao carregar estados:', err);
+            }
+        }
+
+        function selecionarDoc(doc) {
+            documentoSelecionado = doc;
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+                if (b.innerText.replace('-', '').toUpperCase().includes(doc)) {
+                    b.classList.add('active');
+                }
+            });
+            carregarEstados();
+        }
+
+        function renderizarGridEstados(estados) {
+            const grid = document.getElementById('statesGrid');
+            grid.innerHTML = '';
+
+            const busca = (document.getElementById('txtBuscaUf').value || '').trim().toUpperCase();
+
+            const filtrados = estados.filter(e => {
+                if (!busca) return true;
+                return e.uf.includes(busca) || e.estado.toUpperCase().includes(busca);
+            });
+
+            document.getElementById('lblContadorEstados').innerText = `Exibindo ${filtrados.length} estados (${documentoSelecionado})`;
+
+            filtrados.forEach(e => {
+                const isUp = e.status === 'OPERACIONAL';
+                const pillClass = isUp ? 'up' : 'down';
+                const pillLabel = isUp ? 'Operacional' : e.statusRotulo;
+
+                grid.innerHTML += `
+                    <div class="state-card" onclick="testarUf('${e.uf}')" style="cursor: pointer;" title="Clique para testar ${e.uf}">
+                        <div class="state-head">
+                            <span class="state-uf-badge">${e.uf}</span>
+                            <span class="status-pill ${pillClass}">
+                                <span>${e.emoji}</span> ${pillLabel}
+                            </span>
+                        </div>
+                        <div>
+                            <div class="state-name">${e.estado}</div>
+                            <div class="state-region">${e.regiao}</div>
+                        </div>
+                        <div class="authorizer-tag">
+                            <span>${e.autorizador}</span>
+                            <span style="color: var(--text-subtle);">${e.tipoAutorizador === 'PROPRIO' ? 'Próprio' : 'Virtual'}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filtrarEstados() {
+            carregarEstados();
+        }
+
+        function testarUf(uf) {
+            document.getElementById('selFerramenta').value = 'consultar_status_uf';
+            document.getElementById('inpUfTeste').value = uf;
+            ajustarCamposTeste();
+            executarTesteFerramenta();
+            document.getElementById('testador').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function ajustarCamposTeste() {
+            const tool = document.getElementById('selFerramenta').value;
+            const ufInput = document.getElementById('inpUfTeste');
+            const docSelect = document.getElementById('selDocTeste');
+
+            if (tool === 'consultar_status_uf') {
+                ufInput.style.display = 'block';
+                docSelect.style.display = 'block';
+            } else if (tool === 'listar_todos_estados_sefaz') {
+                ufInput.style.display = 'none';
+                docSelect.style.display = 'block';
+            } else {
+                ufInput.style.display = 'none';
+                docSelect.style.display = 'none';
+            }
+        }
+
+        async function executarTesteFerramenta() {
+            const tool = document.getElementById('selFerramenta').value;
+            const uf = document.getElementById('inpUfTeste').value.trim().toUpperCase();
+            const doc = document.getElementById('selDocTeste').value;
+            const output = document.getElementById('outputTeste');
+            const btn = document.getElementById('btnExecutarTeste');
+
+            btn.disabled = true;
+            output.innerText = 'Consultando servidores da SEFAZ em tempo real...';
+
+            try {
+                // Simula a exata requisição JSON-RPC que a Tina faz via Streamable HTTP POST /mcp
+                const payload = {
+                    jsonrpc: '2.0',
+                    id: Date.now(),
+                    method: 'tools/call',
+                    params: {
+                        name: tool,
+                        arguments: tool === 'consultar_status_uf' ? { uf, tipo_documento: doc } : (tool === 'listar_todos_estados_sefaz' ? { tipo_documento: doc } : {})
+                    }
+                };
+
+                const res = await fetch('/mcp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (data.result?.content?.[0]?.text) {
+                    output.innerText = data.result.content[0].text;
+                } else {
+                    output.innerText = JSON.stringify(data, null, 2);
+                }
+            } catch (err) {
+                output.innerText = `Erro ao executar ferramenta: ${err.message}`;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        window.onload = () => {
+            inicializarUrls();
+            carregarDadosIniciais();
+            ajustarCamposTeste();
+            // Executa consulta inicial para a Bahia
+            executarTesteFerramenta();
+        };
+    </script>
+</body>
+</html>

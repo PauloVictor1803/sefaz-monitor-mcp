@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação Técnica - SEFAZ Monitor MCP & REST</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #080b11;
+            --bg-card: #0f1624;
+            --bg-surface: #182338;
+            --bg-code: #0b101b;
+            --border: #1e2c45;
+            --primary: #3b82f6;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+        a { color: var(--primary); text-decoration: none; }
+        h1, h2, h3 { color: #fff; margin-top: 28px; margin-bottom: 12px; }
+        p, li { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; }
+        ul { margin-left: 20px; margin-bottom: 16px; }
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        pre {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #38bdf8;
+            margin: 12px 0;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p><a href="/">← Voltar para o Monitor Principal</a></p>
+        <h1>Documentação da API e Protocolo MCP da SEFAZ</h1>
+        <p>Este servidor expõe o protocolo <strong>Model Context Protocol (Streamable HTTP / SSE)</strong> e endpoints <strong>REST</strong> para monitoramento em tempo real dos serviços autorizadores da SEFAZ em todo o Brasil.</p>
+
+        <h2>1. Ferramentas MCP (Tools)</h2>
+        <div class="card">
+            <h3><span class="badge">consultar_status_geral_sefaz</span></h3>
+            <p>Retorna o panorama geral da SEFAZ em todo o território nacional, indicando se o sistema global está UP ou DOWN, número de incidentes ativos, alertas em andamento e histórico de quedas recentes.</p>
+        </div>
+
+        <div class="card">
+            <h3><span class="badge">consultar_status_uf</span></h3>
+            <p>Retorna o status detalhado da SEFAZ para um estado específico, mapeando automaticamente se ele utiliza autorizador próprio (ex: SEFAZ-BA, SEFAZ-SP, SEFAZ-MG) ou autorizador virtual (SVRS ou SVAN).</p>
+            <p><strong>Parâmetros:</strong></p>
+            <ul>
+                <li><code>uf</code> (string, obrigatório): Sigla do estado (ex: "BA", "SP", "MG", "RS", etc.)</li>
+                <li><code>tipo_documento</code> (string, opcional): "TODOS", "NFE", "NFCE", "CTE", "MDFE" (padrão: "TODOS")</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3><span class="badge">consultar_incidentes_sefaz</span></h3>
+            <p>Lista incidentes ativos, avisos de instabilidade, lentidão e manutenções programadas.</p>
+            <p><strong>Parâmetros:</strong></p>
+            <ul>
+                <li><code>apenas_ativos</code> (boolean, opcional): Default <code>true</code>.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3><span class="badge">listar_todos_estados_sefaz</span></h3>
+            <p>Retorna a tabela consolidada com os 27 estados do Brasil e autorizadores para um tipo de documento fiscal.</p>
+            <p><strong>Parâmetros:</strong></p>
+            <ul>
+                <li><code>tipo_documento</code> (string, opcional): "NFE", "NFCE", "CTE", "MDFE" (padrão: "NFE")</li>
+                <li><code>apenas_com_problemas</code> (boolean, opcional): Se <code>true</code>, traz apenas UFs com falha ou instabilidade.</li>
+            </ul>
+        </div>
+
+        <h2>2. Endpoints REST Convencionais</h2>
+        <div class="card">
+            <p><strong>Status Geral:</strong></p>
+            <pre>GET /api/status</pre>
+            <p><strong>Status por Estado:</strong></p>
+            <pre>GET /api/uf?uf=BA&tipo_documento=TODOS</pre>
+            <p><strong>Incidentes:</strong></p>
+            <pre>GET /api/incidentes?apenas_ativos=true</pre>
+            <p><strong>Todos os Estados:</strong></p>
+            <pre>GET /api/estados?tipo_documento=NFE</pre>
+        </div>
+    </div>
+</body>
+</html>

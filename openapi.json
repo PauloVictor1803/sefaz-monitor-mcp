@@ -1,0 +1,133 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SEFAZ Real-time Monitor MCP & REST API",
+    "version": "1.0.0",
+    "description": "API e Servidor MCP (Streamable HTTP) para monitoramento em tempo real dos serviços autorizadores da SEFAZ em todos os estados do Brasil (NF-e, NFC-e, CT-e, MDF-e), incidentes ativos e manutenções programadas via Webmania®."
+  },
+  "servers": [
+    {
+      "url": "https://monitorsefaz-mcp.netlify.app",
+      "description": "Servidor de Produção Netlify"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Servidor Local"
+    }
+  ],
+  "paths": {
+    "/mcp": {
+      "post": {
+        "summary": "Endpoint Streamable HTTP MCP (JSON-RPC 2.0)",
+        "description": "Endpoint padrão para integração direta com a TINA e clientes Model Context Protocol.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "jsonrpc": { "type": "string", "example": "2.0" },
+                  "id": { "type": ["string", "number"], "example": 1 },
+                  "method": { "type": "string", "example": "tools/call" },
+                  "params": { "type": "object" }
+                },
+                "required": ["jsonrpc", "method"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resposta JSON-RPC 2.0"
+          }
+        }
+      }
+    },
+    "/api/status": {
+      "get": {
+        "summary": "Situação Geral da SEFAZ em Tempo Real",
+        "description": "Retorna o status consolidado de autorização da SEFAZ, incidentes em andamento e manutenções ativas em todo o Brasil.",
+        "responses": {
+          "200": {
+            "description": "Dados da situação geral em tempo real"
+          }
+        }
+      }
+    },
+    "/api/uf": {
+      "get": {
+        "summary": "Status da SEFAZ por Estado (UF)",
+        "description": "Retorna o status em tempo real da SEFAZ para a UF informada (com mapeamento automático de autorizador próprio ou virtual SVRS/SVAN).",
+        "parameters": [
+          {
+            "name": "uf",
+            "in": "query",
+            "required": true,
+            "description": "Sigla de 2 letras da UF (ex: BA, SP, RJ, MG, RS, PE, etc.)",
+            "schema": { "type": "string", "example": "BA" }
+          },
+          {
+            "name": "tipo_documento",
+            "in": "query",
+            "required": false,
+            "description": "Tipo de documento (TODOS, NFE, NFCE, CTE, MDFE)",
+            "schema": { "type": "string", "default": "TODOS", "enum": ["TODOS", "NFE", "NFCE", "CTE", "MDFE"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status detalhado da UF"
+          }
+        }
+      }
+    },
+    "/api/incidentes": {
+      "get": {
+        "summary": "Incidentes e Manutenções",
+        "description": "Lista de incidentes em andamento, alertas de instabilidade e manutenções programadas.",
+        "parameters": [
+          {
+            "name": "apenas_ativos",
+            "in": "query",
+            "required": false,
+            "description": "Se true (padrão), retorna apenas incidentes ativos. Se false, inclui recentemente resolvidos.",
+            "schema": { "type": "boolean", "default": true }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de incidentes"
+          }
+        }
+      }
+    },
+    "/api/estados": {
+      "get": {
+        "summary": "Matriz de Todos os 27 Estados",
+        "description": "Retorna todos os 27 estados com o status dos autorizadores para o documento solicitado.",
+        "parameters": [
+          {
+            "name": "tipo_documento",
+            "in": "query",
+            "required": false,
+            "description": "Tipo de documento (NFE, NFCE, CTE, MDFE)",
+            "schema": { "type": "string", "default": "NFE", "enum": ["NFE", "NFCE", "CTE", "MDFE"] }
+          },
+          {
+            "name": "apenas_com_problemas",
+            "in": "query",
+            "required": false,
+            "description": "Se true, filtra apenas estados que não estejam 100% operacionais.",
+            "schema": { "type": "boolean", "default": false }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de estados e autorizadores"
+          }
+        }
+      }
+    }
+  }
+}
