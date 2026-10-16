@@ -874,6 +874,16 @@
             z-index: 100;
         }
     </style>
+    <link rel="icon" type="image/svg+xml" href="/assets/brand/icone-sefaz.svg?v=brasil">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/icone-32.png?v=brasil">
+    <link rel="alternate icon" href="/favicon.ico?v=brasil">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/icone-180.png?v=brasil">
+    <style>.brand-icon{background:transparent;border:0;box-shadow:none;overflow:visible}.brand-icon::after{display:none}</style>
+    <style>
+        .brand-logo { display: block; width: 236px; height: auto; max-width: 62vw; }
+        .brand:not(.brand-custom) .brand-icon, .brand:not(.brand-custom) .brand-name { display: none; }
+        .brand.brand-custom .brand-logo { display: none; }
+    </style>
 </head>
 <body>
 
@@ -881,17 +891,9 @@
     <header>
         <div class="container nav-content">
             <a href="/" class="brand">
+                <img class="brand-logo" src="/assets/brand/logo-sefaz-fundo-escuro.svg?v=brasil" width="236" height="55" alt="SEFAZ Monitor — API + MCP">
                 <div class="brand-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2L3 6v6c0 5.25 3.82 10.18 9 11.5 5.18-1.32 9-6.25 9-11.5V6l-9-4z" stroke="url(#brandGrad)" stroke-width="2" fill="rgba(56, 189, 248, 0.05)" />
-                        <path d="M7 12h2.5l1.5-3 2 6 1.5-3H17" stroke="#38bdf8" stroke-width="2" />
-                        <defs>
-                            <linearGradient id="brandGrad" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#38bdf8"/>
-                                <stop offset="1" stop-color="#34d399"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
+                    <img src="/assets/brand/icone-sefaz.svg?v=brasil" width="34" height="34" alt="" aria-hidden="true">
                 </div>
                 <div class="brand-name">
                     <span class="brand-title" id="txtAppName">SEFAZ</span>
@@ -1349,6 +1351,7 @@
         }
 
         function aplicarConfiguracoesIniciais() {
+            document.querySelector('.brand').classList.toggle('brand-custom', CONFIG.appName !== 'SEFAZ' || CONFIG.appSub !== 'Monitor');
             const elTitle = document.getElementById('txtAppName');
             if (elTitle) elTitle.innerText = CONFIG.appName;
             const elSub = document.getElementById('txtAppSub');
