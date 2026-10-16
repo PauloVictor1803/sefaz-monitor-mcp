@@ -1,105 +1,83 @@
-# ⚡ SEFAZ Monitor MCP (Streamable HTTP / SSE) & REST API
+# SEFAZ Monitor MCP & REST API
 
-Servidor **Model Context Protocol (MCP)** e **API REST** para monitoramento em tempo real dos serviços autorizadores da **SEFAZ** em todo o território brasileiro (todos os 27 estados + DF), com identificação inteligente entre autorizadores próprios e virtuais (**SVRS**, **SVAN**), feed de incidentes ativos, alertas de lentidão/queda e manutenções programadas.
+Servidor **Model Context Protocol (MCP)** e **API REST** para monitorar a disponibilidade da **SEFAZ** em tempo real nos 27 estados do Brasil.
 
-Desenvolvido para integração nativa com a assistente de suporte **TINA** da **ATS Informática** (via aba *Tools HTTP e MCP / Servidores MCP Streamable HTTP*), Dify, Cursor, Claude e aplicações web.
+O serviço identifica automaticamente se a UF utiliza autorizador próprio (ex: SEFAZ-BA, SEFAZ-SP) ou virtual (SVRS, SVAN), além de listar incidentes ativos, avisos de lentidão e manutenções programadas.
 
-Alimentado pelos dados públicos em tempo real do **Monitor SEFAZ Webmania®**:
-- `https://monitorsefaz.webmaniabr.com/v3/summary.json`
-- `https://monitorsefaz.webmaniabr.com/v3/components.json`
+Dados obtidos publicamente do Monitor SEFAZ Webmania® (`summary.json` e `components.json`).
 
 ---
 
-## 🚀 Funcionalidades Principais
+## Funcionalidades
 
-1. **Protocolo MCP Streamable HTTP & SSE Nativo:** Compatível diretamente com o botão *"Testar conexão"* do Tina Console e clientes MCP modernos (JSON-RPC 2.0 via `initialize`, `ping`, `tools/list` e `tools/call`).
-2. **Resolução Inteligente de UFs:**
-   - Detecta automaticamente quando o estado possui autorizador próprio (ex: **SEFAZ-BA**, **SEFAZ-SP**, **SEFAZ-MG**) ou autorizador virtual (**SVRS**, **SVAN**).
-   - Exemplo: para **BA**, a **NF-e** roda no autorizador próprio da Bahia, mas a **NFC-e** roda na **SVRS**!
-3. **Respostas Formatadas para Chat & WhatsApp:** Resumos limpos, sem asteriscos de markdown que possam poluir o WhatsApp, acompanhados do JSON estruturado completo.
-4. **Deploy Serverless Imediato no Netlify:** Pronto para publicação gratuita no Netlify com Netlify Functions (`netlify.toml` + `netlify/functions/mcp.js`).
-5. **Dashboard Web Interativo:** Painel visual na raiz (`/`) com status ao vivo, matriz de estados e testador de ferramentas integrado.
+- **Compatibilidade MCP 2024-11-05:** Suporte a Streamable HTTP (JSON-RPC 2.0 direto via POST `/mcp`) e Server-Sent Events (SSE via GET `/sse`).
+- **Resolução de Autorizadores por Estado:** Mapeia autorizadores próprios e virtuais para NF-e, NFC-e, CT-e e MDF-e.
+- **Respostas Diretas para LLMs:** Saídas em texto objetivo para chat acompanhadas do JSON estruturado completo.
+- **Deploy Serverless no Netlify:** Pronto para rodar via Netlify Functions (`netlify.toml` + `netlify/functions/mcp.js`) ou localmente com Express.
+- **Painel Web com Testador:** Interface na raiz (`/`) para verificar o status e testar as ferramentas em tempo real.
 
 ---
 
-## 🛠️ Ferramentas MCP (Tools) Expostas
+## Ferramentas MCP Disponíveis
 
 | Ferramenta | Descrição | Parâmetros |
 | :--- | :--- | :--- |
-| `consultar_status_geral_sefaz` | Panorama geral da SEFAZ no Brasil (status global, total de incidentes, manutenções e alertas). | *(Nenhum)* |
-| `consultar_status_uf` | Status da SEFAZ para uma UF específica e tipo de documento (NF-e, NFC-e, CT-e, MDF-e). Identifica se o autorizador é próprio ou virtual. | `uf` (obrigatório: ex: `"BA"`), `tipo_documento` (opcional: `"TODOS"`, `"NFE"`, `"NFCE"`, `"CTE"`, `"MDFE"`) |
-| `consultar_incidentes_sefaz` | Lista incidentes em andamento, alertas de lentidão e manutenções programadas. | `apenas_ativos` (opcional: `true`/`false`) |
-| `listar_todos_estados_sefaz` | Retorna a tabela consolidada dos 27 estados para um documento fiscal. | `tipo_documento` (opcional: `"NFE"`), `apenas_com_problemas` (opcional: `false`) |
+| `consultar_status_geral_sefaz` | Panorama geral da SEFAZ no Brasil (status global, total de incidentes e manutenções). | *(Nenhum)* |
+| `consultar_status_uf` | Status da SEFAZ para uma UF específica e tipo de documento. Identifica se o autorizador é próprio ou virtual. | `uf` (obrigatório, ex: `"BA"`), `tipo_documento` (opcional: `"TODOS"`, `"NFE"`, `"NFCE"`, `"CTE"`, `"MDFE"`) |
+| `consultar_incidentes_sefaz` | Lista incidentes em andamento, alertas de lentidão e manutenções programadas. | `apenas_ativos` (opcional, padrão: `true`) |
+| `listar_todos_estados_sefaz` | Retorna a tabela consolidada dos 27 estados para um documento fiscal. | `tipo_documento` (opcional, padrão: `"NFE"`), `apenas_com_problemas` (opcional, padrão: `false`) |
 
 ---
 
-## 📦 Como Publicar no Netlify
+## Como Conectar ao seu Cliente MCP
 
-Como você já possui a estrutura no Netlify (semelhante ao `consultainscricaoestadual.netlify.app`), você pode publicar este projeto de qualquer uma das três formas:
+Substitua `https://SEU_DOMINIO.netlify.app` pela URL onde o servidor estiver hospedado.
 
-### Opção 1: Via Netlify CLI (Recomendado e mais rápido)
+### 1. Claude Desktop & Claude Code
+No arquivo `claude_desktop_config.json`:
 
-Abra o terminal nesta pasta (`Consulta Sefaz API-MCP`) e execute:
+```json
+{
+  "mcpServers": {
+    "sefaz-monitor": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://SEU_DOMINIO.netlify.app/mcp"]
+    }
+  }
+}
+```
 
+No Claude Code:
 ```bash
-# 1. Login no Netlify (se ainda não estiver conectado)
-npx netlify login
-
-# 2. Inicializar o site no Netlify (ou conectar a um existente)
-npx netlify init
-
-# 3. Publicar em produção diretamente
-npx netlify deploy --prod
+claude mcp add --transport http sefaz-monitor https://SEU_DOMINIO.netlify.app/mcp
 ```
 
-### Opção 2: Via GitHub / GitLab / Bitbucket
+### 2. Cursor IDE
+No arquivo `.cursor/mcp.json` ou nas configurações de MCP do Cursor:
 
-1. Crie um repositório no seu GitHub (ex.: `sefaz-monitor-mcp`).
-2. Faça o push dos arquivos desta pasta:
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: initial commit sefaz monitor mcp"
-   git branch -M main
-   git remote add origin https://github.com/seu-usuario/sefaz-monitor-mcp.git
-   git push -u origin main
-   ```
-3. No painel do [Netlify](https://app.netlify.com), clique em **"Add new site" > "Import an existing project"** e selecione o repositório.
-4. O Netlify detectará automaticamente o arquivo `netlify.toml`! Basta clicar em **Deploy**.
+```json
+{
+  "mcpServers": {
+    "sefaz-monitor": {
+      "url": "https://SEU_DOMINIO.netlify.app/mcp"
+    }
+  }
+}
+```
 
-### Opção 3: Drag & Drop no Netlify
+### 3. Plataformas de Agentes Web (Dify, LibreChat, Chatwoot ou Assistentes Próprios)
+- **Tipo de Conexão:** Streamable HTTP
+- **URL do Servidor:** `https://SEU_DOMINIO.netlify.app/mcp`
+- **Cabeçalhos:** Opcional. Se `AUTH_TOKEN` estiver configurado, envie `Authorization: Bearer <SEU_TOKEN>`.
 
-1. No terminal, gere o diretório ou suba a pasta inteira no painel [Netlify Drop](https://app.netlify.com/drop).
-
----
-
-## 🤖 Como Configurar na TINA (Console ATS)
-
-Após publicar no Netlify, você terá sua URL pública (exemplo: `https://sefaz-monitor.netlify.app`).
-
-1. Acesse o **Console da Tina** e abra o agente **Tina**.
-2. Clique na aba **Tools HTTP e MCP**.
-3. Na seção **Servidores MCP (Streamable HTTP)**, clique em **+ Servidor MCP**.
-4. Configure os campos:
-   - **Nome / Prefixo:** `sefaz_monitor`
-   - **URL:** `https://SEU-SITE.netlify.app/mcp`
-   - **Cabeçalhos:** *(deixe vazio, a menos que configure AUTH_TOKEN)*
-   - **Filtro:** *(deixe vazio para expor todas as 4 ferramentas)*
-5. Clique no botão **Testar conexão**. O servidor responderá com sucesso!
-6. Clique em **Salvar e ativar**.
-
-### 💡 Instrução Pronta para o Prompt da Tina:
-
-Adicione o seguinte trecho no **Prompt** da Tina para que ela utilize o monitor automaticamente quando clientes relatarem problemas com notas fiscais:
-
+### 4. Instrução Sugerida para Prompts de Sistema
 ```text
-## Consulta de Status da SEFAZ em Tempo Real
-Se o cliente relatar erro ao emitir ou transmitir nota fiscal (NF-e, NFC-e, CT-e, MDF-e), lentidão na emissão, mensagem de rejeição de servidor indisponível ou perguntar se a SEFAZ está fora do ar, consulte imediatamente o status do estado dele através da ferramenta sefaz_monitor_consultar_status_uf informando a UF da empresa. Explique ao cliente de forma clara e empática se a SEFAZ do estado dele (ou a SEFAZ Virtual SVRS) está operacional ou passando por instabilidade no momento.
+Quando o usuário relatar erro, lentidão ou rejeição ao emitir documentos fiscais (NF-e, NFC-e, CT-e, MDF-e), ou perguntar sobre a disponibilidade da SEFAZ, consulte o status em tempo real com a ferramenta consultar_status_uf informando a UF da empresa. Explique com clareza se o autorizador do estado (ou o autorizador virtual correspondente) está operacional ou instável.
 ```
 
 ---
 
-## 💻 Como Rodar Localmente (Desenvolvimento)
+## Como Rodar Localmente
 
 ```bash
 # 1. Instalar dependências
@@ -114,26 +92,40 @@ npm run dev
 npm test
 ```
 
-O servidor iniciará em `http://localhost:3000`:
-- **Dashboard Web Interativo:** `http://localhost:3000/`
-- **Endpoint MCP Streamable HTTP:** `http://localhost:3000/mcp`
-- **Endpoint MCP SSE:** `http://localhost:3000/sse`
+O servidor local ficará disponível em `http://localhost:3000`:
+- **Interface Web:** `http://localhost:3000/`
+- **Endpoint MCP:** `http://localhost:3000/mcp`
+- **Endpoint SSE:** `http://localhost:3000/sse`
 - **Status Geral REST:** `http://localhost:3000/api/status`
 - **Status por UF REST:** `http://localhost:3000/api/uf?uf=BA`
-- **Incidentes REST:** `http://localhost:3000/api/incidentes`
 
 ---
 
-## 🔒 Autenticação Opcional
+## Deploy no Netlify
 
-Por padrão, a consulta é aberta (não requer token). Se desejar restringir o acesso no Netlify ou localmente:
-1. Defina a variável de ambiente `AUTH_TOKEN=seu_token_secreto`.
-2. No Tina Console, na configuração do MCP, adicione o cabeçalho:
-   - Nome: `Authorization`
-   - Valor: `Bearer seu_token_secreto` (ou use `x-api-key: seu_token_secreto`).
+```bash
+# 1. Login no Netlify
+npx netlify login
+
+# 2. Inicializar o projeto
+npx netlify init
+
+# 3. Publicar em produção
+npx netlify deploy --build --prod
+```
 
 ---
 
-## 📄 Licença
+## Customização e White-Label
 
-MIT © ATS Informática / Paulo Magalhães.
+Para adaptar este projeto ao seu produto ou marca:
+
+1. **Nome e Marca:** Edite o objeto `CONFIG` em `index.html` e as variáveis CSS em `:root`.
+2. **Repositório:** Atualize a propriedade `CONFIG.repoUrl` com o link do seu repositório Git.
+3. **Autenticação Opcional:** Defina a variável de ambiente `AUTH_TOKEN` no `.env` ou no painel do Netlify para restringir o acesso via token Bearer.
+
+---
+
+## Licença
+
+MIT © Paulo Magalhães e colaboradores open-source.

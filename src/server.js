@@ -67,7 +67,7 @@ function criarInstanciaMcp() {
     // Ferramenta 1: Situação Geral
     server.tool(
         'consultar_status_geral_sefaz',
-        'Consulta a situação geral dos servidores da SEFAZ em tempo real em todo o Brasil (status global UP/DOWN, total de incidentes ativos, manutenções programadas e autorizadores com instabilidade). Use sempre que o cliente ou operador perguntar como está a SEFAZ de forma ampla.',
+        'Consulta a situação geral dos servidores da SEFAZ em tempo real em todo o Brasil (status global UP/DOWN, total de incidentes ativos, manutenções programadas e autorizadores com instabilidade).',
         {},
         async () => {
             try {
@@ -90,7 +90,7 @@ function criarInstanciaMcp() {
     // Ferramenta 2: Status por UF
     server.tool(
         'consultar_status_uf',
-        'Consulta o status da SEFAZ em tempo real para uma UF (estado) específica e tipo de documento (NF-e, NFC-e, CT-e, MDF-e). Identifica automaticamente se a UF utiliza autorizador próprio (ex: SEFAZ-BA, SEFAZ-SP) ou autorizador virtual (SVRS, SVAN). Use quando houver lentidão, rejeição ou dúvida de emissão em um estado.',
+        'Consulta o status da SEFAZ em tempo real para uma UF (estado) específica e tipo de documento (NF-e, NFC-e, CT-e, MDF-e). Identifica se a UF utiliza autorizador próprio (ex: SEFAZ-BA, SEFAZ-SP) ou virtual (SVRS, SVAN).',
         {
             uf: z.string().describe('Sigla de 2 letras da UF do estado (ex: BA, SP, RJ, MG, PE, RS, etc.)'),
             tipo_documento: z.enum(['TODOS', 'NFE', 'NFCE', 'CTE', 'MDFE']).optional().describe('Tipo de documento fiscal (padrão: "TODOS")')
@@ -237,7 +237,7 @@ app.post('/messages', verificarAutenticacao, handlePostMessage);
 app.post('/message', verificarAutenticacao, handlePostMessage);
 app.post('/mcp/messages', verificarAutenticacao, handlePostMessage);
 
-// Suporte a chamada direta JSON-RPC (Streamable HTTP POST sem SSE prévio, compatível com Tina)
+// Suporte a chamada direta JSON-RPC (Streamable HTTP POST sem SSE prévio)
 app.post(['/', '/mcp', '/rpc'], verificarAutenticacao, async (req, res) => {
     const body = req.body;
     const { id, method, params } = body || {};

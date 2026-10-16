@@ -19,7 +19,7 @@
     "/mcp": {
       "post": {
         "summary": "Endpoint Streamable HTTP MCP (JSON-RPC 2.0)",
-        "description": "Endpoint padrão para integração direta com a TINA e clientes Model Context Protocol.",
+        "description": "Endpoint padrão para integração com clientes Model Context Protocol (Streamable HTTP).",
         "requestBody": {
           "required": true,
           "content": {

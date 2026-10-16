@@ -15,7 +15,7 @@ const CORS_HEADERS = {
 const FERRAMENTAS_MCP = [
     {
         name: 'consultar_status_geral_sefaz',
-        description: 'Consulta a situação geral dos servidores da SEFAZ em tempo real em todo o Brasil (status global UP/DOWN, total de incidentes ativos, manutenções programadas e autorizadores com instabilidade). Use sempre que o cliente ou operador perguntar como está a SEFAZ de forma ampla.',
+        description: 'Consulta a situação geral dos servidores da SEFAZ em tempo real em todo o Brasil (status global UP/DOWN, total de incidentes ativos, manutenções programadas e autorizadores com instabilidade).',
         inputSchema: {
             type: 'object',
             properties: {},
@@ -24,7 +24,7 @@ const FERRAMENTAS_MCP = [
     },
     {
         name: 'consultar_status_uf',
-        description: 'Consulta o status da SEFAZ em tempo real para uma UF (estado) específica e tipo de documento (NF-e, NFC-e, CT-e, MDF-e). Identifica automaticamente se a UF utiliza autorizador próprio (ex: SEFAZ-BA, SEFAZ-SP) ou autorizador virtual (SVRS, SVAN). Use quando houver lentidão, rejeição ou dúvida de emissão em um estado.',
+        description: 'Consulta o status da SEFAZ em tempo real para uma UF (estado) específica e tipo de documento (NF-e, NFC-e, CT-e, MDF-e). Identifica se a UF utiliza autorizador próprio (ex: SEFAZ-BA, SEFAZ-SP) ou virtual (SVRS, SVAN).',
         inputSchema: {
             type: 'object',
             properties: {
@@ -258,7 +258,7 @@ export const handler = async (event, context) => {
             };
         }
 
-        // C) Ping de teste de conexão (usado pelo botão "Testar conexão" da Tina)
+        // C) Ping de teste de conexão (utilizado por clientes MCP)
         if (rpcMethod === 'ping') {
             return {
                 statusCode: 200,

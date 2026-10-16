@@ -132,7 +132,7 @@ export async function obterDadosWebmania(forceRefresh = false) {
 
     try {
         const headers = {
-            'User-Agent': 'Sefaz-Monitor-MCP/1.0 (Tina Assistant; ATS Informatica)',
+            'User-Agent': 'Sefaz-Monitor-MCP/1.0 (Open-Source MCP Server; +https://github.com/sefaz-monitor-mcp)',
             'Accept': 'application/json'
         };
 
@@ -379,7 +379,7 @@ export async function consultarStatusUf(uf, tipoDocumento = 'TODOS', forceRefres
         return false;
     });
 
-    // Monta resposta amigável para chat / WhatsApp da Tina
+    // Monta resposta amigável para chat e agentes LLM
     let temProblema = resultadosDocs.some(r => r.status !== 'OPERACIONAL');
     let iconeEstado = temProblema ? '⚠️' : '🟢';
 

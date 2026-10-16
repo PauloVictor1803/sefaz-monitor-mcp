@@ -1,13 +1,13 @@
-# SEFAZ Monitor MCP & REST API (Webmania®)
+# SEFAZ Monitor MCP & REST API
 
-> Servidor Model Context Protocol (Streamable HTTP) e API REST para monitoramento em tempo real de autorizadores da SEFAZ (NF-e, NFC-e, CT-e, MDF-e), incidentes e manutenções nos 27 estados do Brasil.
+> Servidor Model Context Protocol (Streamable HTTP / SSE) e API REST open-source para consultar em tempo real a disponibilidade de autorizadores da SEFAZ (NF-e, NFC-e, CT-e, MDF-e), incidentes e manutenções nos 27 estados do Brasil.
 
-## Ferramentas MCP Disponíveis
+## Ferramentas MCP
 
-1. `consultar_status_geral_sefaz`: Consulta status amplo de autorizadores, total de incidentes ativos, manutenções e autorizadores degradados.
-2. `consultar_status_uf`: Consulta status detalhado de uma UF específica (ex: BA, SP, RJ, MG), identificando automaticamente se o autorizador é próprio ou virtual (SVRS, SVAN).
-3. `consultar_incidentes_sefaz`: Lista incidentes ativos, quedas, instabilidades e manutenções programadas.
-4. `listar_todos_estados_sefaz`: Retorna tabela consolidada dos 27 estados.
+1. `consultar_status_geral_sefaz`: Situação geral de autorizadores, total de incidentes ativos, manutenções e alertas.
+2. `consultar_status_uf`: Status por estado (ex: BA, SP, RJ, MG) e tipo de documento, mapeando se a UF usa autorizador próprio ou virtual (SVRS, SVAN).
+3. `consultar_incidentes_sefaz`: Incidentes ativos, histórico de quedas recentes e manutenções.
+4. `listar_todos_estados_sefaz`: Tabela consolidada com os 27 estados.
 
 ## Endpoints
 

@@ -1,7 +1,7 @@
 {
   "name": "sefaz-monitor-mcp",
   "version": "1.0.0",
-  "description": "Servidor MCP (Streamable HTTP / SSE) e API para Monitoramento em Tempo Real da SEFAZ (NF-e, NFC-e, CT-e, MDF-e) via Webmania® para assistentes virtuais como TINA",
+  "description": "Servidor MCP (Streamable HTTP / SSE) e API REST para monitoramento em tempo real dos serviços autorizadores da SEFAZ (NF-e, NFC-e, CT-e, MDF-e) para agentes de IA e clientes MCP",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
@@ -17,9 +17,11 @@
     "nfce",
     "cte",
     "mdfe",
-    "tina",
-    "resulth",
-    "webmania"
+    "agents",
+    "llm",
+    "claude",
+    "cursor",
+    "open-source"
   ],
   "author": "Paulo Magalhães",
   "license": "MIT",
