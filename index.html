@@ -657,31 +657,53 @@
         .status-pill {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             font-size: 0.75rem;
             font-weight: 700;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 999px;
+            letter-spacing: 0.02em;
         }
 
         .status-pill.up {
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(16, 185, 129, 0.12);
             color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.25);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-pill.warning {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
         }
 
         .status-pill.down {
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(239, 68, 68, 0.12);
             color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.25);
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .status-dot-mini {
-            width: 6px;
-            height: 6px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
-            background-color: currentColor;
             display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .status-pill.up .status-dot-mini {
+            background-color: #10b981;
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+        }
+
+        .status-pill.warning .status-dot-mini {
+            background-color: #f59e0b;
+            box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+        }
+
+        .status-pill.down .status-dot-mini {
+            background-color: #ef4444;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
         }
 
         .authorizer-tag {
@@ -1512,7 +1534,7 @@
                         <div class="state-head">
                             <span class="state-uf-badge">${e.uf}</span>
                             <span class="status-pill ${pillClass}">
-                                <span class="status-dot-mini"></span> ${pillLabel}
+                                <span>${e.emoji || '🟢'}</span> <span>${pillLabel}</span>
                             </span>
                         </div>
                         <div>

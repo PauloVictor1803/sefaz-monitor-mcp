@@ -77,25 +77,25 @@ export function formatarStatus(statusRaw) {
     switch (s) {
         case 'OPERATIONAL':
         case 'UP':
-            return { codigo: 'OPERACIONAL', rotulo: 'Operacional', emoji: '[OK]', classe: 'up' };
+            return { codigo: 'OPERACIONAL', rotulo: 'Operacional', emoji: '🟢', classe: 'up' };
         case 'DEGRADED_PERFORMANCE':
         case 'DEGRADEDPERFORMANCE':
         case 'DEGRADED':
-            return { codigo: 'DEGRADADO', rotulo: 'Instabilidade / Lentidão', emoji: '[ALERTA]', classe: 'degraded' };
+            return { codigo: 'DEGRADADO', rotulo: 'Instabilidade / Lentidão', emoji: '🟡', classe: 'degraded' };
         case 'PARTIAL_OUTAGE':
         case 'PARTIALOUTAGE':
-            return { codigo: 'PARCIAL', rotulo: 'Queda Parcial', emoji: '[PARCIAL]', classe: 'partial' };
+            return { codigo: 'PARCIAL', rotulo: 'Queda Parcial', emoji: '🟠', classe: 'partial' };
         case 'MAJOR_OUTAGE':
         case 'MAJOROUTAGE':
         case 'DOWN':
         case 'OFFLINE':
-            return { codigo: 'OFFLINE', rotulo: 'Fora do Ar (Offline)', emoji: '[OFFLINE]', classe: 'down' };
+            return { codigo: 'OFFLINE', rotulo: 'Fora do Ar (Offline)', emoji: '🔴', classe: 'down' };
         case 'UNDER_MAINTENANCE':
         case 'UNDERMAINTENANCE':
         case 'MAINTENANCE':
-            return { codigo: 'MANUTENCAO', rotulo: 'Em Manutenção', emoji: '[MANUTENCAO]', classe: 'maintenance' };
+            return { codigo: 'MANUTENCAO', rotulo: 'Em Manutenção', emoji: '🔵', classe: 'maintenance' };
         default:
-            return { codigo: s || 'DESCONHECIDO', rotulo: s || 'Desconhecido', emoji: '[-]', classe: 'unknown' };
+            return { codigo: s || 'DESCONHECIDO', rotulo: s || 'Desconhecido', emoji: '⚪', classe: 'unknown' };
     }
 }
 
@@ -294,14 +294,14 @@ export async function consultarStatusGeral(forceRefresh = false) {
     const componentesComProblema = components.filter(c => c.status && c.status.toUpperCase() !== 'OPERATIONAL');
 
     let resumoTexto = `STATUS GERAL DA SEFAZ (TEMPO REAL):\n`;
-    resumoTexto += `• Monitor Geral: ${statusGlobal.rotulo} (${summary.page?.name || 'Webmania'})\n`;
+    resumoTexto += `${statusGlobal.emoji} Monitor Geral: ${statusGlobal.rotulo} (${summary.page?.name || 'Webmania'})\n`;
     resumoTexto += `• Atualizado em: ${formatarDataHora(new Date().toISOString())}\n\n`;
 
     if (incidentesAtivos.length > 0) {
         resumoTexto += `ATENÇÃO: Há ${incidentesAtivos.length} incidente(s) ativo(s) no momento:\n`;
         incidentesAtivos.forEach(inc => {
             const impacto = formatarStatus(inc.impact);
-            resumoTexto += `  • [${impacto.codigo}] ${inc.name} (Início: ${formatarDataHora(inc.started)})\n`;
+            resumoTexto += `  ${impacto.emoji} ${inc.name} (Início: ${formatarDataHora(inc.started)})\n`;
             if (inc.lastUpdate?.message) {
                 resumoTexto += `    Atualização: ${inc.lastUpdate.message}\n`;
             }
@@ -386,7 +386,7 @@ export async function consultarStatusUf(uf, tipoDocumento = 'TODOS', forceRefres
     resumoTexto += `Região: ${infoEstado.regiao} | Consulta em tempo real\n\n`;
 
     resultadosDocs.forEach(r => {
-        resumoTexto += `• ${r.documento}: ${r.statusRotulo}\n`;
+        resumoTexto += `${r.emoji} ${r.documento}: ${r.statusRotulo}\n`;
         resumoTexto += `   Autorizador: ${r.autorizadorNome}\n`;
     });
 
@@ -485,7 +485,7 @@ export async function listarTodosEstados(tipoDocumento = 'NFE', apenasComProblem
         resumoTexto += `100% dos estados estão com status OPERACIONAL para ${tipoDocumento}.\n`;
     } else {
         lista.forEach(item => {
-            resumoTexto += `• [${item.uf}] ${item.estado}: ${item.statusRotulo} (${item.autorizador})\n`;
+            resumoTexto += `${item.emoji} [${item.uf}] ${item.estado}: ${item.statusRotulo} (${item.autorizador})\n`;
         });
     }
 
