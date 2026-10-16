@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Página Não Encontrada | SEFAZ Monitor MCP</title>
+    <meta name="description" content="Página não encontrada no servidor SEFAZ Monitor MCP. Acesse a página inicial ou consulte a documentação da API.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #06090e;
+            --bg-card: rgba(13, 17, 23, 0.75);
+            --border: rgba(148, 163, 184, 0.12);
+            --border-hover: rgba(56, 189, 248, 0.35);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-subtle: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.15);
+            --success: #10b981;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 20%, rgba(37, 99, 235, 0.12) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+        }
+
+        /* Header Minimalista */
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            background: rgba(6, 9, 14, 0.7);
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .brand-icon::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.7), transparent);
+        }
+
+        .brand-name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-title {
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.03em;
+        }
+
+        .brand-sub {
+            font-weight: 500;
+            color: #94a3b8;
+        }
+
+        .brand-pill {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #38bdf8;
+            font-family: var(--font-mono);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 2px 7px;
+            border-radius: 5px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            letter-spacing: 0.05em;
+            margin-left: 4px;
+        }
+
+        .status-badge-static {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #34d399;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .status-dot-static {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Área Central 404 */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+        }
+
+        .error-card {
+            max-width: 680px;
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 48px 40px;
+            text-align: center;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(16px);
+        }
+
+        .error-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8, #34d399);
+        }
+
+        .error-code {
+            font-family: var(--font-mono);
+            font-size: 6rem;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.05em;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 20%, #38bdf8 60%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .error-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 999px;
+            color: #f87171;
+            font-size: 0.78rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .error-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .error-description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .action-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--border-hover);
+            background: rgba(51, 65, 85, 0.8);
+            transform: translateY(-1px);
+        }
+
+        /* Links Rápidos */
+        .quick-routes {
+            border-top: 1px solid var(--border);
+            padding-top: 24px;
+            text-align: left;
+        }
+
+        .quick-routes-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-subtle);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .routes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .route-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .route-link:hover {
+            border-color: var(--border-hover);
+            background: rgba(30, 41, 59, 0.8);
+            color: var(--accent);
+        }
+
+        .route-link code {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: #38bdf8;
+            margin-left: auto;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 0;
+            text-align: center;
+            color: var(--text-subtle);
+            font-size: 0.82rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--primary);
+            color: white;
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            display: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container nav-content">
+            <a href="/" class="brand">
+                <div class="brand-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L3 6v6c0 5.25 3.82 10.18 9 11.5 5.18-1.32 9-6.25 9-11.5V6l-9-4z" stroke="url(#brandGrad)" stroke-width="2" fill="rgba(56, 189, 248, 0.05)" />
+                        <path d="M7 12h2.5l1.5-3 2 6 1.5-3H17" stroke="#38bdf8" stroke-width="2" />
+                        <defs>
+                            <linearGradient id="brandGrad" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#38bdf8"/>
+                                <stop offset="1" stop-color="#34d399"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="brand-name">
+                    <span class="brand-title">SEFAZ</span>
+                    <span class="brand-sub">Monitor</span>
+                    <span class="brand-pill">MCP</span>
+                </div>
+            </a>
+
+            <div class="status-badge-static" id="headerStatusBadge">
+                <span class="status-dot-static"></span>
+                <span id="headerStatusText">SEFAZ OPERACIONAL</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="error-card">
+            <div class="error-code">404</div>
+            <div class="error-tag">ROTA NÃO ENCONTRADA</div>
+            <h1 class="error-title">Página Inexistente</h1>
+            <p class="error-description">
+                O endereço acessado não existe ou foi movido. Não se preocupe: os serviços de monitoramento fiscal, a API REST e o servidor MCP continuam operando normalmente.
+            </p>
+
+            <div class="action-group">
+                <a href="/" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Voltar ao Início
+                </a>
+
+                <a href="/docs" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    Documentação
+                </a>
+
+                <button class="btn btn-secondary" onclick="copiarEndpointMcp()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copiar URL MCP
+                </button>
+            </div>
+
+            <div class="quick-routes">
+                <div class="quick-routes-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="12 8 8 12 12 16 12 8"></polygon>
+                    </svg>
+                    Rotas e Recursos Disponíveis
+                </div>
+                <div class="routes-grid">
+                    <a href="/#monitor" class="route-link">
+                        <span>Monitor 27 Estados</span>
+                        <code>/#monitor</code>
+                    </a>
+                    <a href="/#manual-agente" class="route-link">
+                        <span>Manual do Agente</span>
+                        <code>.MD</code>
+                    </a>
+                    <a href="/api/status" class="route-link" target="_blank">
+                        <span>API REST Status</span>
+                        <code>/api/status</code>
+                    </a>
+                    <a href="/llms.txt" class="route-link" target="_blank">
+                        <span>Contexto para LLMs</span>
+                        <code>/llms.txt</code>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>SEFAZ Monitor MCP • Projeto Open Source sob Licença MIT</p>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast">Copiado com sucesso!</div>
+
+    <script>
+        function copiarEndpointMcp() {
+            const url = `${window.location.origin}/mcp`;
+            navigator.clipboard.writeText(url).then(() => {
+                const t = document.getElementById('toast');
+                t.innerText = 'Endpoint MCP copiado: ' + url;
+                t.style.display = 'block';
+                setTimeout(() => { t.style.display = 'none'; }, 2800);
+            });
+        }
+
+        // Verifica status da SEFAZ em background para tranquilizar o usuário
+        fetch('/api/status')
+            .then(res => res.json())
+            .then(data => {
+                const headerText = document.getElementById('headerStatusText');
+                if (data.statusGeral === 'OPERACIONAL') {
+                    headerText.innerText = 'SEFAZ OPERACIONAL';
+                } else {
+                    headerText.innerText = `SEFAZ: ${data.statusGeralRotulo || data.statusGeral}`;
+                }
+            })
+            .catch(() => {});
+    </script>
+</body>
+</html>

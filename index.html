@@ -10,25 +10,25 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Design Tokens Agnósticos e Configuráveis */
-            --bg-page: #0a0d14;
-            --bg-card: #101623;
-            --bg-card-hover: #151d2e;
-            --bg-surface: #172134;
+            --bg-page: #090d16;
+            --bg-card: #0f1624;
+            --bg-card-hover: #141e30;
+            --bg-surface: #172235;
             --bg-code: #0b111c;
-            --border: #1e2c45;
-            --border-highlight: #2f456e;
+            --border: #1c2a42;
+            --border-highlight: #2c4267;
             --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.25);
+            --primary-glow: rgba(59, 130, 246, 0.22);
             --accent: #06b6d4;
-            --text-main: #f1f5f9;
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --text-subtle: #64748b;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --radius-lg: 14px;
+            --radius-lg: 12px;
             --radius-md: 8px;
+            --radius-sm: 6px;
             --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
@@ -46,26 +46,35 @@
             line-height: 1.6;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 20% 15%, rgba(59, 130, 246, 0.07) 0%, transparent 40%),
-                radial-gradient(circle at 80% 25%, rgba(6, 182, 212, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 50% 85%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
+                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.06) 0%, transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.04) 0%, transparent 50%);
             background-attachment: fixed;
         }
 
         .container {
-            max-width: 1180px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 24px;
         }
 
-        /* Top Bar */
+        /* SVG Icon Utility */
+        .svg-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            vertical-align: middle;
+        }
+
+        /* Top Navbar */
         header {
             position: sticky;
             top: 0;
             z-index: 50;
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            background: rgba(10, 13, 20, 0.88);
+            background: rgba(9, 13, 22, 0.9);
             border-bottom: 1px solid var(--border);
         }
 
@@ -73,7 +82,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 70px;
+            height: 72px;
         }
 
         .brand {
@@ -82,22 +91,109 @@
             gap: 12px;
             text-decoration: none;
             color: var(--text-main);
-            font-weight: 800;
+        }
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .brand-icon::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.7), transparent);
+        }
+
+        .brand-name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-size: 1.15rem;
             letter-spacing: -0.02em;
         }
 
-        .brand-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #2563eb, #0284c7);
+        .brand-title {
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.03em;
+        }
+
+        .brand-sub {
+            font-weight: 500;
+            color: #94a3b8;
+        }
+
+        .brand-pill {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #38bdf8;
+            font-family: var(--font-mono);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 2px 7px;
+            border-radius: 5px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            letter-spacing: 0.05em;
+            margin-left: 4px;
+        }
+
+        .agent-manual-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .agent-manual-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, #38bdf8, #34d399);
+        }
+
+        .agent-manual-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .agent-manual-actions {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-            box-shadow: 0 0 16px rgba(37, 99, 235, 0.35);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .agent-manual-preview {
+            background: #090d16;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            max-height: 380px;
+            overflow-y: auto;
+            padding: 16px 20px;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
 
         .nav-links {
@@ -118,32 +214,45 @@
             color: var(--text-main);
         }
 
-        .badge-live {
+        /* Status Badge Estático (Sem esferas piscando) */
+        .status-badge-static {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             padding: 6px 14px;
             border-radius: 999px;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
             color: #34d399;
             font-size: 0.8rem;
             font-weight: 700;
+            letter-spacing: 0.03em;
         }
 
-        .pulse-dot {
+        .status-dot-static {
             width: 8px;
             height: 8px;
             background-color: #10b981;
             border-radius: 50%;
-            box-shadow: 0 0 8px #10b981;
-            animation: pulse 2s infinite;
+            display: inline-block;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        .status-badge-static.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.25);
+            color: #fbbf24;
+        }
+        .status-badge-static.warning .status-dot-static {
+            background-color: #f59e0b;
+        }
+
+        .status-badge-static.danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.25);
+            color: #f87171;
+        }
+        .status-badge-static.danger .status-dot-static {
+            background-color: #ef4444;
         }
 
         /* Hero */
@@ -166,8 +275,8 @@
             align-items: center;
             gap: 6px;
             padding: 4px 12px;
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.25);
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
             border-radius: 999px;
             color: #60a5fa;
             font-size: 0.78rem;
@@ -205,7 +314,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 14px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
         }
 
         .url-info {
@@ -272,25 +381,38 @@
             background: var(--border);
         }
 
-        /* Metrics */
+        /* Metric Cards com Vetores Limpos */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 14px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
             margin: 36px 0;
+        }
+
+        @media (max-width: 960px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 560px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .metric-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 18px;
+            padding: 18px 20px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
+            min-width: 0;
         }
 
-        .metric-icon {
+        .metric-icon-box {
             width: 44px;
             height: 44px;
             border-radius: 10px;
@@ -298,25 +420,39 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            color: var(--primary);
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+        }
+
+        .metric-details {
+            min-width: 0;
+            overflow: hidden;
         }
 
         .metric-val {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             font-weight: 800;
             color: var(--text-main);
-            line-height: 1.2;
+            line-height: 1.25;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .metric-label {
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             color: var(--text-muted);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.04em;
+            margin-top: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* Sections */
+        /* Section Header */
         .section-header {
             margin-bottom: 20px;
             display: flex;
@@ -327,18 +463,21 @@
         }
 
         .section-title {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 800;
             letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .section-subtitle {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             margin-top: 4px;
         }
 
-        /* Feed de Incidentes */
+        /* Incidents Card */
         .incidents-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -347,26 +486,48 @@
             margin-bottom: 40px;
         }
 
+        .incident-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
         .incident-item {
             display: flex;
             align-items: flex-start;
             gap: 12px;
-            padding: 12px 14px;
+            padding: 14px 16px;
             background: var(--bg-code);
             border-radius: var(--radius-md);
-            border-left: 4px solid var(--success);
+            border-left: 3px solid var(--success);
             margin-top: 10px;
         }
 
         .incident-item.alert {
             border-left-color: var(--danger);
-            background: rgba(239, 68, 68, 0.07);
+            background: rgba(239, 68, 68, 0.06);
         }
 
         .incident-item.resolved {
             border-left-color: var(--accent);
             background: rgba(6, 182, 212, 0.04);
         }
+
+        .incident-icon {
+            margin-top: 2px;
+            color: var(--success);
+        }
+        .incident-item.alert .incident-icon { color: var(--danger); }
+        .incident-item.resolved .incident-icon { color: var(--accent); }
+
+        .incident-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+        .incident-item.alert .incident-title { color: #f87171; }
+        .incident-item.resolved .incident-title { color: #22d3ee; }
 
         .incident-time {
             font-size: 0.75rem;
@@ -375,7 +536,7 @@
             margin-top: 3px;
         }
 
-        /* Matriz de Estados */
+        /* States Filter & Grid */
         .filter-bar {
             display: flex;
             align-items: center;
@@ -440,7 +601,8 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-subtle);
-            font-size: 13px;
+            display: flex;
+            align-items: center;
         }
 
         .states-grid {
@@ -495,7 +657,7 @@
         .status-pill {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             font-size: 0.75rem;
             font-weight: 700;
             padding: 3px 8px;
@@ -503,15 +665,23 @@
         }
 
         .status-pill.up {
-            background: rgba(16, 185, 129, 0.12);
+            background: rgba(16, 185, 129, 0.1);
             color: #34d399;
             border: 1px solid rgba(16, 185, 129, 0.25);
         }
 
         .status-pill.down {
-            background: rgba(239, 68, 68, 0.12);
+            background: rgba(239, 68, 68, 0.1);
             color: #f87171;
             border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        .status-dot-mini {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: currentColor;
+            display: inline-block;
         }
 
         .authorizer-tag {
@@ -527,7 +697,7 @@
             justify-content: space-between;
         }
 
-        /* Testador Interativo */
+        /* Interactive Tester */
         .tester-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -578,7 +748,7 @@
             line-height: 1.5;
         }
 
-        /* Guia Agnóstico de Clientes MCP */
+        /* Client Guides */
         .client-guide-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -606,6 +776,9 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .guide-tab-btn.active {
@@ -635,7 +808,7 @@
             line-height: 1.5;
         }
 
-        /* Card de Customização para a Comunidade */
+        /* Customization Card */
         .customization-card {
             background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-card) 100%);
             border: 1px dashed var(--border-highlight);
@@ -646,9 +819,9 @@
 
         .placeholder-pill {
             display: inline-block;
-            background: rgba(245, 158, 11, 0.15);
+            background: rgba(245, 158, 11, 0.12);
             color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.3);
+            border: 1px solid rgba(245, 158, 11, 0.25);
             border-radius: 4px;
             padding: 1px 6px;
             font-family: var(--font-mono);
@@ -686,18 +859,34 @@
     <header>
         <div class="container nav-content">
             <a href="/" class="brand">
-                <div class="brand-icon">⚡</div>
-                <div><span id="txtAppName">SEFAZ Monitor</span> <span style="color: var(--primary); font-weight: 400;">MCP</span></div>
+                <div class="brand-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L3 6v6c0 5.25 3.82 10.18 9 11.5 5.18-1.32 9-6.25 9-11.5V6l-9-4z" stroke="url(#brandGrad)" stroke-width="2" fill="rgba(56, 189, 248, 0.05)" />
+                        <path d="M7 12h2.5l1.5-3 2 6 1.5-3H17" stroke="#38bdf8" stroke-width="2" />
+                        <defs>
+                            <linearGradient id="brandGrad" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#38bdf8"/>
+                                <stop offset="1" stop-color="#34d399"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="brand-name">
+                    <span class="brand-title" id="txtAppName">SEFAZ</span>
+                    <span class="brand-sub" id="txtAppSub">Monitor</span>
+                    <span class="brand-pill">MCP</span>
+                </div>
             </a>
             <div class="nav-links">
+                <a href="#manual-agente">Manual IA (.MD)</a>
                 <a href="#monitor">Monitor</a>
                 <a href="#testador">Testador</a>
                 <a href="#clientes">Clientes MCP</a>
                 <a href="#customizacao">Customização</a>
                 <a href="/docs">Docs</a>
                 <a href="#" id="linkRepoHeader" target="_blank" rel="noopener">GitHub</a>
-                <div class="badge-live" id="headerStatusBadge">
-                    <span class="pulse-dot"></span>
+                <div class="status-badge-static" id="headerStatusBadge">
+                    <span class="status-dot-static"></span>
                     <span id="headerStatusText">SEFAZ OPERACIONAL</span>
                 </div>
             </div>
@@ -722,67 +911,106 @@
                     <span class="url-text" id="mcpUrlDisplay">https://.../mcp</span>
                 </div>
                 <button class="btn btn-primary" onclick="copiarUrlMcp()">
-                    📋 Copiar URL do MCP
+                    <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copiar URL do MCP
                 </button>
             </div>
         </section>
 
-        <!-- Métricas Rápidas -->
+        <!-- Métricas Rápidas (SVGs Vetoriais & Sem Quebra no 4º Card) -->
         <div class="metrics-grid">
             <div class="metric-card">
-                <div class="metric-icon" style="color: #34d399;">🌐</div>
-                <div>
+                <div class="metric-icon-box" style="color: #34d399; background: rgba(16, 185, 129, 0.1);">
+                    <!-- Globe SVG -->
+                    <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                </div>
+                <div class="metric-details">
                     <div class="metric-val" id="metricStatusGlobal">OPERACIONAL</div>
                     <div class="metric-label">Status Global</div>
                 </div>
             </div>
+
             <div class="metric-card">
-                <div class="metric-icon" style="color: #60a5fa;">⚡</div>
-                <div>
+                <div class="metric-icon-box" style="color: #60a5fa; background: rgba(59, 130, 246, 0.1);">
+                    <!-- Activity / Alert SVG -->
+                    <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </div>
+                <div class="metric-details">
                     <div class="metric-val" id="metricIncidentesAtivos">0</div>
                     <div class="metric-label">Incidentes Ativos</div>
                 </div>
             </div>
+
             <div class="metric-card">
-                <div class="metric-icon" style="color: #22d3ee;">🏛️</div>
-                <div>
-                    <div class="metric-val">27 UFs</div>
-                    <div class="metric-label">Estados + SVRS / SVAN</div>
+                <div class="metric-icon-box" style="color: #22d3ee; background: rgba(6, 182, 212, 0.1);">
+                    <!-- Map SVG -->
+                    <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                        <line x1="8" y1="2" x2="8" y2="18"></line>
+                        <line x1="16" y1="6" x2="16" y2="22"></line>
+                    </svg>
+                </div>
+                <div class="metric-details">
+                    <div class="metric-val">27 Estados</div>
+                    <div class="metric-label">UFs + SVRS / SVAN</div>
                 </div>
             </div>
+
             <div class="metric-card">
-                <div class="metric-icon" style="color: #fbbf24;">📑</div>
-                <div>
-                    <div class="metric-val">4 Documentos</div>
-                    <div class="metric-label">NF-e • NFC-e • CT-e • MDF-e</div>
+                <div class="metric-icon-box" style="color: #fbbf24; background: rgba(245, 158, 11, 0.1);">
+                    <!-- Layers / File-Text SVG -->
+                    <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <div class="metric-details">
+                    <div class="metric-val">Tipos/Documento</div>
+                    <div class="metric-label" style="white-space: nowrap;">NF-e, NFC-e, CT-e, MDF-e</div>
                 </div>
             </div>
         </div>
 
         <!-- Feed de Incidentes & Manutenções -->
         <div class="incidents-card">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                <h3 style="font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-                    🔔 Alertas de Instabilidade e Histórico Recente
+            <div class="incident-header">
+                <h3 class="section-title">
+                    <svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    Alertas de Instabilidade e Histórico Recente
                 </h3>
                 <span style="font-size: 0.78rem; color: var(--text-subtle);" id="lblUltimaAtt">Atualizado agora</span>
             </div>
             <div id="incidentsContainer">
-                <div class="incident-item">
-                    <span style="font-size: 16px;">✅</span>
-                    <div>
-                        <div style="font-weight: 700; font-size: 0.9rem;">Todos os serviços operando normalmente</div>
-                        <div class="incident-time">Nenhum autorizador monitorado apresenta indisponibilidade no momento.</div>
-                    </div>
-                </div>
+                <!-- Renderizado via JS -->
             </div>
         </div>
 
-        <!-- Matriz de Disponibilidade por Estado -->
+        <!-- Matriz de Estados -->
         <section id="monitor">
             <div class="section-header">
                 <div>
-                    <h2 class="section-title">Disponibilidade por Estado</h2>
+                    <h2 class="section-title">
+                        <svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                        Disponibilidade por Estado
+                    </h2>
                     <p class="section-subtitle">Diferenciação automática entre autorizador próprio e autorizador virtual (SVRS / SVAN)</p>
                 </div>
                 <div class="tabs">
@@ -795,7 +1023,12 @@
 
             <div class="filter-bar">
                 <div class="search-box">
-                    <span class="search-icon">🔍</span>
+                    <span class="search-icon">
+                        <svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </span>
                     <input type="text" id="txtBuscaUf" class="search-input" placeholder="Filtrar por UF ou Estado (ex: BA, SP, Bahia)..." oninput="filtrarEstados()">
                 </div>
                 <div style="font-size: 0.82rem; color: var(--text-muted);" id="lblContadorEstados">
@@ -813,8 +1046,17 @@
             <div class="tester-card">
                 <div class="section-header">
                     <div>
-                        <h2 class="section-title">🧪 Testador de Ferramentas MCP</h2>
-                        <p class="section-subtitle">Execução das ferramentas expostas pelo protocolo JSON-RPC 2.0</p>
+                        <h2 class="section-title">
+                            <svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+                                <path d="M10 2v7.31"></path>
+                                <path d="M14 9.3V2"></path>
+                                <path d="M8.5 2h7"></path>
+                                <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+                                <path d="M5.52 16h12.96"></path>
+                            </svg>
+                            Testador de Ferramentas MCP
+                        </h2>
+                        <p class="section-subtitle">Execução de ferramentas expostas pelo protocolo JSON-RPC 2.0</p>
                     </div>
                 </div>
 
@@ -837,24 +1079,93 @@
                     </select>
 
                     <button class="btn btn-primary" onclick="executarTesteFerramenta()" id="btnExecutarTeste">
-                        ▶️ Executar Consulta
+                        <svg class="svg-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Executar Consulta
                     </button>
                 </div>
 
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                     <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">SAÍDA DA FERRAMENTA (TEXTO FORMATADO):</span>
-                    <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="copiarRetorno()">Copiar</button>
+                    <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="copiarRetorno()">
+                        <svg class="svg-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        Copiar
+                    </button>
                 </div>
                 <div class="output-box" id="outputTeste">Selecione os parâmetros e clique em "Executar Consulta"...</div>
             </div>
         </section>
 
-        <!-- Guia Agnóstico de Conexão com Clientes MCP -->
+        <!-- Manual Completo para Agentes de IA (.MD) -->
+        <section id="manual-agente">
+            <div class="agent-manual-card">
+                <div class="agent-manual-header">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <span class="hero-badge" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: #34d399;">Instruções Prontas para Agentes</span>
+                            <span class="hero-badge">Formato .MD</span>
+                        </div>
+                        <h2 class="section-title" style="margin-bottom: 6px;">
+                            <svg class="svg-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8;">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            Manual Completo para Enviar ao Agente de IA
+                        </h2>
+                        <p class="section-subtitle">
+                            Copie o manual em Markdown abaixo e cole diretamente no prompt de sistema ou base de conhecimento do seu assistente de IA (Claude, ChatGPT, Cursor, Dify, etc.). Ele entenderá a arquitetura da SEFAZ, saberá invocar as ferramentas e orientará operadores a resolver falhas e emitir em contingência.
+                        </p>
+                    </div>
+
+                    <div class="agent-manual-actions">
+                        <button class="btn btn-primary" onclick="copiarManualAgente()" id="btnCopiarManual" style="padding: 10px 18px; font-weight: 700;">
+                            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copiar Manual (.MD)
+                        </button>
+                        <a class="btn btn-secondary" href="/INSTRUCOES_AGENTE.md" download="INSTRUCOES_AGENTE.md">
+                            <svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Baixar .MD
+                        </a>
+                        <a class="btn btn-secondary" href="/INSTRUCOES_AGENTE.md" target="_blank" rel="noopener">
+                            <svg class="svg-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                            Link Direto
+                        </a>
+                    </div>
+                </div>
+
+                <div class="agent-manual-preview" id="previewManual">Carregando manual do agente...</div>
+            </div>
+        </section>
+
+        <!-- Guia de Conexão com Clientes MCP e Agentes de IA -->
         <section id="clientes">
             <div class="client-guide-card">
                 <div class="section-header">
                     <div>
-                        <h2 class="section-title">🔌 Como Conectar em Qualquer Cliente MCP</h2>
+                        <h2 class="section-title">
+                            <svg class="svg-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+                            </svg>
+                            Como Conectar em Qualquer Cliente MCP
+                        </h2>
                         <p class="section-subtitle">Configurações para Claude, Cursor, plataformas de agentes e chamadas diretas</p>
                     </div>
                 </div>
@@ -866,7 +1177,6 @@
                     <button class="guide-tab-btn" onclick="abrirGuiaCliente('prompt')">Prompt Recomendado</button>
                 </div>
 
-                <!-- Painel Claude -->
                 <div class="guide-content-panel active" id="panel-claude">
                     <p style="font-size: 0.9rem; color: var(--text-muted);">
                         Adicione a configuração abaixo no arquivo <code>claude_desktop_config.json</code>:
@@ -884,7 +1194,6 @@
                     </p>
                 </div>
 
-                <!-- Painel Cursor -->
                 <div class="guide-content-panel" id="panel-cursor">
                     <p style="font-size: 0.9rem; color: var(--text-muted);">
                         No Cursor, adicione a entrada em <strong>Settings &gt; Features &gt; MCP</strong> ou no arquivo <code>.cursor/mcp.json</code>:
@@ -898,7 +1207,6 @@
 }</pre>
                 </div>
 
-                <!-- Painel Web Agent -->
                 <div class="guide-content-panel" id="panel-webagent">
                     <p style="font-size: 0.9rem; color: var(--text-muted);">
                         Em plataformas que suportam <strong>Streamable HTTP</strong> (Dify, LibreChat, Chatwoot, ou assistentes corporativos):
@@ -910,7 +1218,6 @@
                     </ul>
                 </div>
 
-                <!-- Painel Prompt -->
                 <div class="guide-content-panel" id="panel-prompt">
                     <p style="font-size: 0.9rem; color: var(--text-muted);">
                         Diretriz sugerida para incluir nas instruções de sistema do seu agente:
@@ -923,11 +1230,15 @@
         <!-- Seção de Customização Open Source -->
         <section id="customizacao">
             <div class="customization-card">
-                <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 8px;">
-                    🛠️ Como Customizar este Projeto para Sua Marca
+                <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                    <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #fbbf24;">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    Como Customizar este Projeto para Sua Marca
                 </h3>
                 <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px;">
-                    Este projeto é 100% agnóstico e configurável. Os seguintes pontos foram pensados para adaptação:
+                    Este projeto é 100% aberto, modular e configurável. Os seguintes pontos foram pensados para adaptação:
                 </p>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
@@ -967,29 +1278,76 @@
     <div class="toast" id="toast">Copiado com sucesso!</div>
 
     <script>
-        // Configuração de Identidade e Links (Agnóstica)
         const CONFIG = {
-            appName: "SEFAZ Monitor",
-            repoUrl: "https://github.com/PauloVictor1803/sefaz-monitor-mcp" // Substitua pelo link do seu repositório
+            appName: "SEFAZ",
+            appSub: "Monitor",
+            repoUrl: "https://github.com/PauloVictor1803/sefaz-monitor-mcp"
         };
 
         let documentoSelecionado = 'NFE';
+        let manualAgenteTexto = "";
+
+        async function carregarManualAgente() {
+            try {
+                const res = await fetch('/INSTRUCOES_AGENTE.md');
+                if (res.ok) {
+                    manualAgenteTexto = await res.text();
+                    const el = document.getElementById('previewManual');
+                    if (el) el.innerText = manualAgenteTexto;
+                }
+            } catch (err) {
+                console.warn('Não foi possível carregar manual externamente:', err);
+            }
+        }
+
+        function copiarManualAgente() {
+            const btn = document.getElementById('btnCopiarManual');
+            const textoParaCopiar = manualAgenteTexto || document.getElementById('previewManual')?.innerText || '';
+
+            if (!textoParaCopiar || textoParaCopiar.includes('Carregando')) {
+                fetch('/INSTRUCOES_AGENTE.md')
+                    .then(res => res.text())
+                    .then(txt => {
+                        manualAgenteTexto = txt;
+                        navigator.clipboard.writeText(txt).then(() => {
+                            mostrarToast('Manual do Agente (.MD) copiado com sucesso!');
+                        });
+                    })
+                    .catch(() => {
+                        mostrarToast('Erro ao copiar manual.');
+                    });
+                return;
+            }
+
+            navigator.clipboard.writeText(textoParaCopiar).then(() => {
+                mostrarToast('Manual do Agente (.MD) copiado com sucesso!');
+            }).catch(() => {
+                mostrarToast('Erro ao acessar a área de transferência.');
+            });
+        }
 
         function aplicarConfiguracoesIniciais() {
-            document.getElementById('txtAppName').innerText = CONFIG.appName;
-            document.getElementById('txtFooterBrand').innerText = `${CONFIG.appName} MCP`;
+            const elTitle = document.getElementById('txtAppName');
+            if (elTitle) elTitle.innerText = CONFIG.appName;
+            const elSub = document.getElementById('txtAppSub');
+            if (elSub) elSub.innerText = CONFIG.appSub;
+
+            const elFooter = document.getElementById('txtFooterBrand');
+            if (elFooter) elFooter.innerText = `${CONFIG.appName} ${CONFIG.appSub} MCP`;
 
             const linkRepo = document.getElementById('linkRepoHeader');
             if (linkRepo) linkRepo.href = CONFIG.repoUrl;
 
             const urlBase = window.location.origin;
             const mcpUrl = `${urlBase}/mcp`;
-            document.getElementById('mcpUrlDisplay').innerText = mcpUrl;
+            const elMcpUrl = document.getElementById('mcpUrlDisplay');
+            if (elMcpUrl) elMcpUrl.innerText = mcpUrl;
 
-            // Atualiza placeholders visuais nos exemplos de código
             document.querySelectorAll('.placeholder-url').forEach(el => {
                 el.innerText = mcpUrl;
             });
+
+            carregarManualAgente();
         }
 
         function copiarUrlMcp() {
@@ -1025,8 +1383,20 @@
 
                 document.getElementById('metricIncidentesAtivos').innerText = data.totalIncidentesAtivos;
 
-                const headerText = isOp ? 'SEFAZ OPERACIONAL' : 'INSTABILIDADE SEFAZ';
-                document.getElementById('headerStatusText').innerText = headerText;
+                const headerBadge = document.getElementById('headerStatusBadge');
+                const headerText = document.getElementById('headerStatusText');
+
+                if (isOp) {
+                    headerBadge.className = 'status-badge-static';
+                    headerText.innerText = 'SEFAZ OPERACIONAL';
+                } else if (data.statusGeral === 'DEGRADADO' || data.statusGeral === 'PARCIAL') {
+                    headerBadge.className = 'status-badge-static warning';
+                    headerText.innerText = 'SEFAZ INSTÁVEL';
+                } else {
+                    headerBadge.className = 'status-badge-static danger';
+                    headerText.innerText = 'SEFAZ OFFLINE';
+                }
+
                 document.getElementById('lblUltimaAtt').innerText = `Atualizado às ${new Date().toLocaleTimeString('pt-BR')}`;
 
                 renderizarIncidentes(data);
@@ -1046,9 +1416,14 @@
             if (ativos.length === 0 && resolvidos.length === 0) {
                 container.innerHTML = `
                     <div class="incident-item">
-                        <span style="font-size: 16px;">✅</span>
+                        <span class="incident-icon">
+                            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </span>
                         <div>
-                            <div style="font-weight: 700; font-size: 0.9rem;">Todos os serviços operando normalmente</div>
+                            <div class="incident-title" style="color: #34d399;">Todos os serviços operando normalmente</div>
                             <div class="incident-time">Nenhum autorizador monitorado apresenta indisponibilidade no momento.</div>
                         </div>
                     </div>
@@ -1059,9 +1434,15 @@
             ativos.forEach(inc => {
                 container.innerHTML += `
                     <div class="incident-item alert">
-                        <span style="font-size: 16px;">🚨</span>
+                        <span class="incident-icon">
+                            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                        </span>
                         <div>
-                            <div style="font-weight: 700; font-size: 0.9rem; color: #f87171;">${inc.name}</div>
+                            <div class="incident-title">${inc.name}</div>
                             <div class="incident-time">Iniciado em: ${new Date(inc.started).toLocaleString('pt-BR')} | Status: ${inc.status}</div>
                             ${inc.lastUpdate?.message ? `<div style="font-size: 0.82rem; color: #cbd5e1; margin-top: 3px;">${inc.lastUpdate.message}</div>` : ''}
                         </div>
@@ -1072,9 +1453,14 @@
             resolvidos.slice(0, 3).forEach(inc => {
                 container.innerHTML += `
                     <div class="incident-item resolved">
-                        <span style="font-size: 16px;">✅</span>
+                        <span class="incident-icon">
+                            <svg class="svg-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </span>
                         <div>
-                            <div style="font-weight: 700; font-size: 0.9rem; color: #22d3ee;">${inc.name} (Resolvido)</div>
+                            <div class="incident-title">${inc.name} (Resolvido)</div>
                             <div class="incident-time">Resolvido em: ${new Date(inc.resolved).toLocaleString('pt-BR')} (Início: ${new Date(inc.started).toLocaleTimeString('pt-BR')})</div>
                         </div>
                     </div>
@@ -1126,7 +1512,7 @@
                         <div class="state-head">
                             <span class="state-uf-badge">${e.uf}</span>
                             <span class="status-pill ${pillClass}">
-                                <span>${e.emoji}</span> ${pillLabel}
+                                <span class="status-dot-mini"></span> ${pillLabel}
                             </span>
                         </div>
                         <div>

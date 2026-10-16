@@ -13,6 +13,16 @@
   status = 200
 
 [[redirects]]
+  from = "/manual"
+  to = "/INSTRUCOES_AGENTE.md"
+  status = 200
+
+[[redirects]]
+  from = "/manual.md"
+  to = "/INSTRUCOES_AGENTE.md"
+  status = 200
+
+[[redirects]]
   from = "/mcp"
   to = "/.netlify/functions/mcp"
   status = 200

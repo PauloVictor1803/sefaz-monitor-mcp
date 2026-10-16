@@ -77,25 +77,25 @@ export function formatarStatus(statusRaw) {
     switch (s) {
         case 'OPERATIONAL':
         case 'UP':
-            return { codigo: 'OPERACIONAL', rotulo: 'Operacional', emoji: '🟢', classe: 'up' };
+            return { codigo: 'OPERACIONAL', rotulo: 'Operacional', emoji: '[OK]', classe: 'up' };
         case 'DEGRADED_PERFORMANCE':
         case 'DEGRADEDPERFORMANCE':
         case 'DEGRADED':
-            return { codigo: 'DEGRADADO', rotulo: 'Instabilidade / Lentidão', emoji: '🟡', classe: 'degraded' };
+            return { codigo: 'DEGRADADO', rotulo: 'Instabilidade / Lentidão', emoji: '[ALERTA]', classe: 'degraded' };
         case 'PARTIAL_OUTAGE':
         case 'PARTIALOUTAGE':
-            return { codigo: 'PARCIAL', rotulo: 'Queda Parcial', emoji: '🟠', classe: 'partial' };
+            return { codigo: 'PARCIAL', rotulo: 'Queda Parcial', emoji: '[PARCIAL]', classe: 'partial' };
         case 'MAJOR_OUTAGE':
         case 'MAJOROUTAGE':
         case 'DOWN':
         case 'OFFLINE':
-            return { codigo: 'OFFLINE', rotulo: 'Fora do Ar (Offline)', emoji: '🔴', classe: 'down' };
+            return { codigo: 'OFFLINE', rotulo: 'Fora do Ar (Offline)', emoji: '[OFFLINE]', classe: 'down' };
         case 'UNDER_MAINTENANCE':
         case 'UNDERMAINTENANCE':
         case 'MAINTENANCE':
-            return { codigo: 'MANUTENCAO', rotulo: 'Em Manutenção', emoji: '🔧', classe: 'maintenance' };
+            return { codigo: 'MANUTENCAO', rotulo: 'Em Manutenção', emoji: '[MANUTENCAO]', classe: 'maintenance' };
         default:
-            return { codigo: s || 'DESCONHECIDO', rotulo: s || 'Desconhecido', emoji: '⚪', classe: 'unknown' };
+            return { codigo: s || 'DESCONHECIDO', rotulo: s || 'Desconhecido', emoji: '[-]', classe: 'unknown' };
     }
 }
 
@@ -293,26 +293,26 @@ export async function consultarStatusGeral(forceRefresh = false) {
     // Contabiliza componentes com problema
     const componentesComProblema = components.filter(c => c.status && c.status.toUpperCase() !== 'OPERATIONAL');
 
-    let resumoTexto = `📊 STATUS GERAL DA SEFAZ (TEMPO REAL):\n`;
-    resumoTexto += `• Monitor Geral: ${statusGlobal.emoji} ${statusGlobal.rotulo} (${summary.page?.name || 'Webmania'})\n`;
+    let resumoTexto = `STATUS GERAL DA SEFAZ (TEMPO REAL):\n`;
+    resumoTexto += `• Monitor Geral: ${statusGlobal.rotulo} (${summary.page?.name || 'Webmania'})\n`;
     resumoTexto += `• Atualizado em: ${formatarDataHora(new Date().toISOString())}\n\n`;
 
     if (incidentesAtivos.length > 0) {
-        resumoTexto += `⚠️ ATENÇÃO: Há ${incidentesAtivos.length} incidente(s) ativo(s) no momento:\n`;
+        resumoTexto += `ATENÇÃO: Há ${incidentesAtivos.length} incidente(s) ativo(s) no momento:\n`;
         incidentesAtivos.forEach(inc => {
             const impacto = formatarStatus(inc.impact);
-            resumoTexto += `  • ${impacto.emoji} ${inc.name} (Início: ${formatarDataHora(inc.started)})\n`;
+            resumoTexto += `  • [${impacto.codigo}] ${inc.name} (Início: ${formatarDataHora(inc.started)})\n`;
             if (inc.lastUpdate?.message) {
                 resumoTexto += `    Atualização: ${inc.lastUpdate.message}\n`;
             }
         });
         resumoTexto += `\n`;
     } else {
-        resumoTexto += `✅ Nenhum incidente ativo no momento. Todos os autorizadores monitorados estão respondendo normalmente.\n\n`;
+        resumoTexto += `Nenhum incidente ativo no momento. Todos os autorizadores monitorados estão respondendo normalmente.\n\n`;
     }
 
     if (manutencoesAtivas.length > 0) {
-        resumoTexto += `🔧 Manutenções Programadas Ativas:\n`;
+        resumoTexto += `Manutenções Programadas Ativas:\n`;
         manutencoesAtivas.forEach(m => {
             resumoTexto += `  • ${m.name} (Início: ${formatarDataHora(m.start)}, Duração est.: ${m.duration} min)\n`;
         });
@@ -320,7 +320,7 @@ export async function consultarStatusGeral(forceRefresh = false) {
     }
 
     if (incidentesResolvidosRecentes.length > 0) {
-        resumoTexto += `🕒 Últimas instabilidades resolvidas recentemente:\n`;
+        resumoTexto += `Últimas instabilidades resolvidas recentemente:\n`;
         incidentesResolvidosRecentes.slice(0, 3).forEach(inc => {
             resumoTexto += `  • ${inc.name} (Resolvido em: ${formatarDataHora(inc.resolved)})\n`;
         });
@@ -381,18 +381,17 @@ export async function consultarStatusUf(uf, tipoDocumento = 'TODOS', forceRefres
 
     // Monta resposta amigável para chat e agentes LLM
     let temProblema = resultadosDocs.some(r => r.status !== 'OPERACIONAL');
-    let iconeEstado = temProblema ? '⚠️' : '🟢';
 
-    let resumoTexto = `${iconeEstado} STATUS SEFAZ - ${infoEstado.nome.toUpperCase()} (${ufUpper})\n`;
+    let resumoTexto = `STATUS SEFAZ - ${infoEstado.nome.toUpperCase()} (${ufUpper})\n`;
     resumoTexto += `Região: ${infoEstado.regiao} | Consulta em tempo real\n\n`;
 
     resultadosDocs.forEach(r => {
-        resumoTexto += `• ${r.emoji} ${r.documento}: ${r.statusRotulo}\n`;
+        resumoTexto += `• ${r.documento}: ${r.statusRotulo}\n`;
         resumoTexto += `   Autorizador: ${r.autorizadorNome}\n`;
     });
 
     if (incidentesRelacionados.length > 0) {
-        resumoTexto += `\n🚨 ALERTA DE INCIDENTE ATIVO NA SEFAZ (${ufUpper}):\n`;
+        resumoTexto += `\nALERTA DE INCIDENTE ATIVO NA SEFAZ (${ufUpper}):\n`;
         incidentesRelacionados.forEach(inc => {
             resumoTexto += `• ${inc.name} (Início: ${formatarDataHora(inc.started)})\n`;
             if (inc.lastUpdate?.message) {
@@ -400,7 +399,7 @@ export async function consultarStatusUf(uf, tipoDocumento = 'TODOS', forceRefres
             }
         });
     } else {
-        resumoTexto += `\n✅ Sem incidentes ou manutenções registradas para ${ufUpper} no momento.`;
+        resumoTexto += `\nSem incidentes ou manutenções registradas para ${ufUpper} no momento.`;
     }
 
     return {
@@ -426,15 +425,15 @@ export async function consultarIncidentes(apenasAtivos = true, forceRefresh = fa
     const manutencoes = summary.activeMaintenances || [];
     const resolvidos = summary.recentlyResolvedIncidents || [];
 
-    let resumoTexto = `🔔 MONITOR SEFAZ - ALERTA DE INCIDENTES:\n\n`;
+    let resumoTexto = `MONITOR SEFAZ - INCIDENTES E MANUTENÇÕES:\n\n`;
 
     if (ativos.length === 0) {
-        resumoTexto += `🟢 Não há nenhum incidente ativo no momento. Todos os autorizadores estão estáveis.\n\n`;
+        resumoTexto += `Não há nenhum incidente ativo no momento. Todos os autorizadores estão estáveis.\n\n`;
     } else {
-        resumoTexto += `🚨 Incidentes em andamento (${ativos.length}):\n`;
+        resumoTexto += `Incidentes em andamento (${ativos.length}):\n`;
         ativos.forEach(inc => {
             const impacto = formatarStatus(inc.impact);
-            resumoTexto += `• ${impacto.emoji} ${inc.name}\n`;
+            resumoTexto += `• [${impacto.codigo}] ${inc.name}\n`;
             resumoTexto += `  Status: ${inc.status} | Início: ${formatarDataHora(inc.started)}\n`;
             if (inc.lastUpdate?.message) {
                 resumoTexto += `  Última atualização: ${inc.lastUpdate.message}\n`;
@@ -444,7 +443,7 @@ export async function consultarIncidentes(apenasAtivos = true, forceRefresh = fa
     }
 
     if (manutencoes.length > 0) {
-        resumoTexto += `🔧 Manutenções programadas:\n`;
+        resumoTexto += `Manutenções programadas:\n`;
         manutencoes.forEach(m => {
             resumoTexto += `• ${m.name} (Início: ${formatarDataHora(m.start)}, Duração est.: ${m.duration} min)\n`;
         });
@@ -452,7 +451,7 @@ export async function consultarIncidentes(apenasAtivos = true, forceRefresh = fa
     }
 
     if (!apenasAtivos && resolvidos.length > 0) {
-        resumoTexto += `✅ Incidentes recentes já resolvidos:\n`;
+        resumoTexto += `Incidentes recentes já resolvidos:\n`;
         resolvidos.forEach(inc => {
             resumoTexto += `• ${inc.name} (Início: ${formatarDataHora(inc.started)} | Fim: ${formatarDataHora(inc.resolved)})\n`;
         });
@@ -481,12 +480,12 @@ export async function listarTodosEstados(tipoDocumento = 'NFE', apenasComProblem
         lista = lista.filter(item => item.status !== 'OPERACIONAL');
     }
 
-    let resumoTexto = `📋 STATUS SEFAZ - TODOS OS ESTADOS (${tipoDocumento.toUpperCase()}):\n\n`;
+    let resumoTexto = `STATUS SEFAZ - TODOS OS ESTADOS (${tipoDocumento.toUpperCase()}):\n\n`;
     if (lista.length === 0 && apenasComProblemas) {
-        resumoTexto += `🟢 Parabéns! 100% dos estados estão com status OPERACIONAL para ${tipoDocumento}.\n`;
+        resumoTexto += `100% dos estados estão com status OPERACIONAL para ${tipoDocumento}.\n`;
     } else {
         lista.forEach(item => {
-            resumoTexto += `${item.emoji} [${item.uf}] ${item.estado}: ${item.statusRotulo} (${item.autorizador})\n`;
+            resumoTexto += `• [${item.uf}] ${item.estado}: ${item.statusRotulo} (${item.autorizador})\n`;
         });
     }
 

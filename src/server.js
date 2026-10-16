@@ -410,6 +410,9 @@ app.get('/api/estados', verificarAutenticacao, async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+// Fallback para páginas não encontradas (404)
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, '..', '404.html'));
 });
 
 app.listen(PORT, () => {
